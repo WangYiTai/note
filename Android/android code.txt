@@ -1,0 +1,39 @@
+/**
+ * Get the IP of current Wi-Fi connection
+ * @return IP as string
+ */
+private String getIP() {
+ try {
+   WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+   WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+   int ipAddress = wifiInfo.getIpAddress();
+   return String.format(Locale.getDefault(), "%d.%d.%d.%d",
+   (ipAddress & 0xff), (ipAddress >> 8 & 0xff),
+   (ipAddress >> 16 & 0xff), (ipAddress >> 24 & 0xff));
+ } catch (Exception ex) {
+   Log.e(TAG, ex.getMessage());
+   return null;
+ }
+}
+
+
+/** Get IP For mobile */
+public static String getMobileIP() {
+  try {
+    for (Enumeration<NetworkInterface> en = NetworkInterface
+    .getNetworkInterfaces(); en.hasMoreElements();) {
+       NetworkInterface intf = (NetworkInterface) en.nextElement();
+       for (Enumeration<InetAddress> enumIpAddr = intf
+          .getInetAddresses(); enumIpAddr.hasMoreElements();) {
+          InetAddress inetAddress = enumIpAddr.nextElement();
+          if (!inetAddress.isLoopbackAddress()) {
+             String ipaddress = inetAddress .getHostAddress().toString();
+             return ipaddress;
+          }
+       }
+    }
+  } catch (SocketException ex) {
+     Log.e(TAG, "Exception in Get IP Address: " + ex.toString());
+  }
+  return null;
+}

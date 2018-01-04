@@ -1,0 +1,59 @@
+# Create New Thread #
+1. 
+new Thread(() => {// do any things}).Start();
+
+2. 
+using System.Threading;
+
+Thread thread = new Thread(new ThreadStart(WorkThreadFunction));
+thread.Start();
+
+public void WorkThreadFunction()
+{
+  try
+  {
+    // do any background work
+  }
+  catch (Exception ex)
+  {
+    // log errors
+  }
+}
+
+3.
+void Start(object data)
+{
+    MyClass myData = (MyClass)myData;
+    // do stuff
+}
+
+void Test(MyClass data)
+{
+    new Thread(new ParameterizedThreadStart(Start)).Start(data);
+}
+
+4.
+Task.Factory.StartNew(() => 
+{
+    // Whatever code you want in your thread
+});
+
+Task.Factory.StartNew(() => {}).ContinueWith((result) => 
+{
+    // Whatever code should be executed after the newly started thread.
+});
+
+
+# 計算執行時間 #
+using System.Diagnostics;
+
+# 開始 #
+var s1 = Stopwatch.StartNew();
+# 結束 #
+s1.Stop();
+
+// Get the elapsed time as a TimeSpan value.
+TimeSpan ts = s1.Elapsed;
+
+
+
