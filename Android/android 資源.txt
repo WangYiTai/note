@@ -1,0 +1,56 @@
+# arc progress #
+naseemakhtar994/ArcSeekBar
+jamesmontemagno/Xamarin.Forms-Android-CustomProgressBar
+https://github.com/xabre/Xamarin-CircularSlider-SeekArc
+Mikhus/canvas-gauges
+https://github.com/NAXAM/circleprogressbar-android-binding
+https://github.com/Pygmalion69/Gauge
+https://github.com/pkleczko/CustomGauge
+https://github.com/neild001/SeekArc
+https://github.com/MarcinMoskala/ArcSeekBar
+https://github.com/carlosrobles/ArcSeekBar
+https://github.com/rorschach/ShaderSeekArc
+http://androidtutorialsrkt.blogspot.tw/2017/05/circular-seekbar-in-android.html
+https://github.com/devadvance/circularseekbar
+http://www.voidcn.com/article/p-xtqdvgai-ha.html
+https://stackoverflow.com/questions/12551295/simple-gauge-view-like-speedmeter-in-android
+https://zhidao.baidu.com/question/937554119529930852.html
+https://github.com/FelixLee0527/ColorArcProgressBar
+http://www.cnblogs.com/tianzhijiexian/p/3889795.html
+https://www.zhangshengrong.com/p/q0arZ0dkax/
+http://www.it610.com/article/3883649.htm
+
+
+
+
+# google map #
+mehakmeet/HalfMap_HalfViewPager_UI
+
+# picker #
+naseemakhtar994/android-dial-picker
+
+# APP¤W¬[ #
+https://www.oschina.net/translate/submitting-your-application-to-android-market
+# APP ¶}µo #
+https://www.oschina.net/translate/20-must-read-tips-for-developing-mobile-applications
+https://www.oschina.net/translate/the-10-rookie-mistakes-every-android-developer-should-avoid
+https://www.oschina.net/translate/how-to-apply-a-custom-theme-to-an-android-application
+https://www.oschina.net/translate/android-speech-to-text-api
+https://www.oschina.net/translate/android-detect-internet-connection-status
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
