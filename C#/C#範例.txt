@@ -57,3 +57,412 @@ TimeSpan ts = s1.Elapsed;
 
 
 
+# 檔案操作 #
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        byte[] array = File.ReadAllBytes("C:\\a");
+        Console.WriteLine("First byte: {0}", array[0]);
+        Console.WriteLine("Last byte: {0}",
+            array[array.Length - 1]);
+        Console.WriteLine(array.Length);
+    }
+}
+
+using System;
+using System.IO;
+
+class BinaryRW
+{
+    static void Main()
+    {
+        const int arrayLength = 1000;
+
+        // Create random data to write to the stream.
+        byte[] dataArray = new byte[arrayLength];
+        new Random().NextBytes(dataArray);
+
+        BinaryWriter binWriter = new BinaryWriter(new MemoryStream());
+
+        // Write the data to the stream.
+        Console.WriteLine("Writing the data.");
+        binWriter.Write(dataArray);
+
+        // Create the reader using the stream from the writer.
+        BinaryReader binReader = 
+            new BinaryReader(binWriter.BaseStream);
+
+        // Set Position to the beginning of the stream.
+        binReader.BaseStream.Position = 0;
+
+        // Read and verify the data.
+        byte[] verifyArray = binReader.ReadBytes(arrayLength);
+        if(verifyArray.Length != arrayLength)
+        {
+            Console.WriteLine("Error writing the data.");
+            return;
+        }
+        for(int i = 0; i < arrayLength; i++)
+        {
+            if(verifyArray[i] != dataArray[i])
+            {
+                Console.WriteLine("Error writing the data.");
+                return;
+            }
+        }
+        Console.WriteLine("The data was written and verified.");
+    }
+}
+
+
+using System;
+using System.IO;
+using System.Text;
+
+public class DumpFileSample
+{
+    private static readonly int CHUNK_SIZE = 1024;
+    public static void Main(String[] args)
+    {
+        if ((args.Length == 0) || !File.Exists(args[0]))
+        {
+            Console.WriteLine("Please provide an existing file name.");
+        }
+        else
+        {
+            using (FileStream fs = new FileStream(args[0], FileMode.Open, FileAccess.Read))
+            {
+                using (BinaryReader br = new BinaryReader(fs, new ASCIIEncoding()))
+                {
+                    byte[] chunk;
+
+                    chunk = br.ReadBytes(CHUNK_SIZE);
+                    while(chunk.Length > 0)
+                    {
+                        DumpBytes(chunk, chunk.Length);
+                        chunk = br.ReadBytes(CHUNK_SIZE);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void DumpBytes(byte[] bdata, int len)
+    {
+        int i;
+        int j = 0;
+        char dchar;
+        // 3 * 16 chars for hex display, 16 chars for text and 8 chars
+        // for the 'gutter' int the middle.
+        StringBuilder dumptext = new StringBuilder("        ", 16 * 4 + 8);
+        for (i = 0; i < len; i++)
+        {
+            dumptext.Insert(j * 3, String.Format("{0:X2} ", (int)bdata[i]));
+            dchar = (char)bdata[i];
+            //' replace 'non-printable' chars with a '.'.
+            if (Char.IsWhiteSpace(dchar) || Char.IsControl(dchar))
+            {
+                dchar = '.';
+            }
+            dumptext.Append(dchar);
+            j++;
+            if (j == 16)
+            {
+                Console.WriteLine(dumptext);
+                dumptext.Length = 0;
+                dumptext.Append("        ");
+                j = 0;
+            }
+        }
+        // display the remaining line
+        if (j > 0)
+        {
+            for (i = j; i < 16; i++)
+            {
+                dumptext.Insert(j * 3, "   ");
+            }
+            Console.WriteLine(dumptext);
+        }
+    }
+}
+
+
+
+var bytes = File.ReadAllBytes(@"yourpathtofile");
+
+ [Test]
+    public void WriteToBinaryFile()
+    {
+        var ints = new[] {1, 2, 3, 4, 5, 6, 7};
+
+        using (var filestream = File.Create(@"c:\apps\test.bin"))
+        using (var binarystream = new BinaryWriter(filestream))
+        {
+            foreach (var i in ints)
+            {
+                binarystream.Write(i);
+            }
+        }
+    }
+	
+	
+	
+   [Test]
+    public void ReadFromBinaryFile()
+    {
+        // Approach one
+        using (var filestream = File.Open(@"C:\apps\test.bin", FileMode.Open))
+        using (var binaryStream = new BinaryReader(filestream))
+        {
+            var pos = 0;
+            var length = (int)binaryStream.BaseStream.Length;
+            while (pos < length)
+            {
+                var integerFromFile = binaryStream.ReadInt32();
+                pos += sizeof(int);
+            }
+        }
+    }
+
+	
+    [Test]
+    public void ReadFromBinaryFile2()
+    {
+        // Approach two
+        using (var filestream = File.Open(@"C:\apps\test.bin", FileMode.Open))
+        using (var binaryStream = new BinaryReader(filestream))
+        {
+            while (binaryStream.PeekChar() != -1)
+            {
+                var integerFromFile = binaryStream.ReadInt32();
+            }
+        }
+    }	
+
+	
+        int[] ll;
+        using (FileStream fs = File.OpenRead("image-text-16.txt"))
+        {
+            int numberEntries = fs.Length / sizeof(int);
+            using (BinaryReader br = new BinaryReader(fs))
+            {
+                ll = new int[numberEntries];
+                for (int i = 0; i < numberEntries; ++i)
+                {
+                    ll[i] = br.ReadInt32();
+                }
+            }
+        }
+        // ll is the result
+		
+##
+        在日常?程?程中，我?可能?常需要Copy各种??，一般??有以下几种常?的方法：
+		Array.Copy，IList<T>.Copy，
+		BinaryReader.ReadBytes，Buffer.BlockCopy,以及System.Buffer.memcpyimpl，
+		由于最后一种需要使用指?，所以本文不引入?方法。 
+        本次??，使用以上前4种方法，各?行1000万次，?察?果。
+##
+
+using System;  
+using System.Collections.Generic;  
+using System.Diagnostics;  
+using System.IO;  
+  
+namespace BenchmarkCopyArray  
+{  
+    class Program  
+    {  
+        private const int TestTimes = 10000000;  
+        static void Main()  
+        {  
+            var testArrayCopy = new TestArrayCopy();  
+            TestCopy(testArrayCopy.TestBinaryReader, "Binary.ReadBytes");  
+            TestCopy(testArrayCopy.TestConvertToList, "ConvertToList");  
+            TestCopy(testArrayCopy.TestArrayDotCopy, "Array.Copy");  
+            TestCopy(testArrayCopy.TestBlockCopy, "Buffer.BlockCopy");  
+            Console.Read();  
+        }  
+  
+        private static void TestCopy(Action testMethod, string methodName)  
+        {  
+            var stopWatch = new Stopwatch();  
+            stopWatch.Start();  
+            for (int i = 0; i < TestTimes; i++)  
+            {  
+                testMethod();  
+            }  
+            testMethod();  
+            stopWatch.Stop();  
+            Console.WriteLine("{0}: {1} seconds, {2}.", methodName, stopWatch.Elapsed.Seconds, stopWatch.Elapsed.Milliseconds);  
+        }  
+    }  
+  
+    class TestArrayCopy  
+    {  
+        private readonly byte[] _sourceBytes = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };  
+  
+        public void TestBinaryReader()  
+        {  
+            var binaryReader = new BinaryReader(new MemoryStream(_sourceBytes));  
+            binaryReader.ReadBytes(_sourceBytes.Length);  
+        }  
+  
+        public void TestConvertToList()  
+        {  
+            IList<byte> bytesSourceList = new List<byte>(_sourceBytes);  
+            var bytesNew = new byte[_sourceBytes.Length];  
+            bytesSourceList.CopyTo(bytesNew, 0);  
+        }  
+  
+        public void TestArrayDotCopy()  //最佳
+        {  
+            var bytesNew = new byte[_sourceBytes.Length];  
+            Array.Copy(_sourceBytes, 0, bytesNew, 0, _sourceBytes.Length);  
+        }  
+  
+        public void TestBlockCopy()  
+        {  
+            var bytesNew = new byte[_sourceBytes.Length];  
+            Buffer.BlockCopy(_sourceBytes, 0, bytesNew, 0, _sourceBytes.Length);  
+        }  
+    }  
+}  
+
+
+C# 使用TCP的方式,將目前的桌面傳輸到另一台電腦上顯示
+這幾天突發奇想,想寫個程式能把另一台電腦上的桌面即時的傳輸到我的電腦上,可以藉此知道另一台電腦的狀況,所以就開始著手Study這個東西,這個功能會用到一些技術,覺得這些技術也不錯玩,所以把這個文章分幾篇來寫. 最後的程式畫面就會如下:
+
+底下的那個畫面就是來自192.168.1.60
+　　即然要把桌面的畫面傳到另一台電腦去顯示,那麼首先就要先能抓取到目前的桌面畫面,因為網路傳輸量的關係,所以圖檔也不能太大,也因此這部份額外抓出來談.
+
+private byte[] GetScreen() 
+{
+int Height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;//抓取桌面的高度
+int Width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;//抓取桌面的寬度 
+Bitmap screenshot = new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+Graphics graph = Graphics.FromImage(screenshot);
+graph.CopyFromScreen(0, 0, 0, 0, new Size(Width, Height), CopyPixelOperation.SourceCopy);
+int FixWidth = 800; //設定新圖檔的解晰度,寬度
+int FixHeight = Convert.ToInt16((Decimal.Parse(FixWidth.ToString()) / Decimal.Parse(Width.ToString())) * Height); //計算高度
+Bitmap bmp = new Bitmap(screenshot, new Size(FixWidth, FixHeight));
+MemoryStream ms = new MemoryStream();
+bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg); //把圖檔用新的解晰度去儲存
+screenshot.Dispose();
+graph.Dispose();
+bmp.Dispose();
+return ms.GetBuffer();
+}
+這段程式碼是這整個功能的一部份,主要是用來回傳把桌面用byte[]來回傳,而抓圖部份則是在3~8行就完成了,而10~14則是改變圖檔的解晰度去儲存,如果用原始大小,似乎大了點,所以調一下解晰度再回傳,可以節省一點頻寬,或許這時有人會想問,那把它壓縮啊! 答案是不行的,問題說明請參考鄭子璉的 : GZipStream/DeflateStream 在壓縮二進位檔會造成檔案放大
+　　而第3,4行呢,則可依個人需求去抓取桌面,比如說,要的只是桌面,不含工具列,或是跟此範例一樣,是含工具列的,當然也可以抓ActiveWindow,那第8行就也要改一下,才會抓對位置.
+　　所以呢,除了改變解晰度及色彩外,似乎沒有其它可用的壓縮方案來進行壓圖的動作,抓取桌面或部份,就看個人需求,而這段Code就可以把圖面用byte[]回傳了,下次就會是說明,如何用TCP來把它傳送出去,及Client端怎麼去接收與顯示.
+參考資料 :
+MSDN Bitmap 類別
+MSDN Graphics 類別
+MSDN Screen 類別
+鄭子璉 GZipStream/DeflateStream 在壓縮二進位檔會造成檔案放大
+
+在第一篇的時候,已經講到如何抓取桌面上的畫面,所以這篇所要做的,就是將抓下來的畫面透過TCP的方式,傳送出去與呈現,這部份會用到Thread的方式去做TCPListener.
+我的做法是用Timer的方式,每隔一段時間傳送一次,所以會用到Timer這個物件,時間設太短只是加重負擔,太長,畫面斷續的會更明顯,所以這個視情況調整,也不見得要用Timer的方式,我只是用它來觸發傳圖的動作.
+
+private void timer1_Tick(object sender, EventArgs e)
+{//timer 的Tick事件
+SendImg();
+}
+private void SendImg()
+{
+try
+{
+TcpClient tcpc = new TcpClient(txt_IP.Text.Trim(), 5657); //txt_IP是要傳送的目的IP,看要傳到那一台電腦去,用的Port是5657
+NetworkStream tcpStream = tcpc.GetStream();
+byte[] SC = GetScreen(); //GetScreen就是前一篇所介紹的
+tcpStream.Write(SC, 0, SC.Length);
+tcpStream.Flush();
+tcpStream.Close();
+tcpStream.Dispose();
+tcpc.Close();
+}
+catch (Exception ex)
+{
+txt_Msg.Text = ex.Message; //txt_Msg是TextBox,用來顯示錯誤訊息的.怎麼呈現,看各位想法
+}
+}
+
+在傳送的部份,較為簡單,把圖給傳送出去就好,而接收部份,就較複雜一點,這部份有用到Thread的方式去運作,將接收到的圖面呈現在PictureBox上,此接收與呈現圖面的原始碼如下:
+
+private Thread thImg;
+private TcpListener tcpImg;
+public bool listenerRun = true;
+//listenerRun為true，表示可以接受連接請求，false則為結束程式
+public Form1()
+{
+InitializeComponent();
+thImg = new Thread(new ThreadStart(ListenImg));
+thImg.Start();
+}
+private void ListenImg()
+{
+try
+{
+tcpImg = new TcpListener(System.Net.Dns.GetHostAddresses(System.Net.Dns.GetHostName())[0], 5657);//在5657埠新建一個TcpListener物件
+tcpImg.Start();
+while (listenerRun)//開始監聽
+{
+Socket s = tcpImg.AcceptSocket();
+NetworkStream ns = new NetworkStream(s);
+int size = 100000;
+byte[] buff = new byte[size];
+int read = -1;
+read = ns.Read(buff, 0, size);
+if (read > 0)
+{
+MemoryStream ms = new MemoryStream(buff, 0, size);
+this.Invoke(new SetImg(Set_Img),new object[] {Image.FromStream(ms)}); //更新圖面資訊
+this.Invoke(new SetMsg(Set_Msg), new object[] {s.RemoteEndPoint.ToString() }); //更新連線IP
+ms.Dispose();
+this.Invoke(new SetErr(Set_Err), new object[] {""});
+}
+}
+}
+catch (System.Security.SecurityException ex)
+{
+this.Invoke(new SetErr(Set_Err), new object[] { ex.Message });
+}
+catch
+{
+}
+}
+private delegate void SetImg(Image bmp);
+private void Set_Img(Image bmp)
+{
+pictureBox1.Image = bmp; //將圖呈現出來
+}
+private delegate void SetErr(string err);
+private void Set_Err(string err)
+{
+txt_Msg.Text = err; //顯示錯誤訊息
+}
+private delegate void SetMsg(string msg);
+private void Set_Msg(string msg)
+{
+txt_ImgFrom.Text = msg; //顯示畫面來自那個IP
+}
+
+這樣子就完成了遠端桌面的抓取與傳送/呈現的功能了,但這還有很多待改善的部份,希望各位高手能提供想法,大家一起交流~
+註 : 此程式所會用到的命名空間如下
+using System.Threading; 
+using System.Net.Sockets; 
+using System.IO;
+參考資料 :
+MSDN Thread 類別
+MSDN System.Net.Sockets 類別
+MSDN System.IO 命名空間
+
+
+http://karatejb.blogspot.tw/2014/11/socket-programming-in-c-server-side.html
+https://dotblogs.com.tw/kevintan1983/archive/2010/10/15/18348.aspx
+https://gist.github.com/aethur/49029
+https://home.gamer.com.tw/creationDetail.php?sn=3612377

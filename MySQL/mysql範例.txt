@@ -1,8 +1,11 @@
 # 查尋 id 最大值資料
-select * 
+select * , FROM_UNIXTIME(DiagTimestamp/1000)
 from lv_data 
 where id = (select max(id) from lv_data)
 order by diagtimestamp desc,
 lv_id asc
 limit 500;
 
+
+# 備註 long 轉成時間 (如上) # 
+FROM_UNIXTIME(DiagTimestamp/1000)
