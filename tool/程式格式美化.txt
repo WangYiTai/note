@@ -1,0 +1,10 @@
+# java #
+https://www.tutorialspoint.com/online_java_formatter.htm
+
+# C.NET #
+https://www.freecodeformat.com/c-format.php
+http://csharppad.com/gist/84a787039938ef21f730
+https://codebeautify.org/csharpviewer#
+
+# SQL #
+http://www.dpriver.com/pp/sqlformat.htm

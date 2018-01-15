@@ -1,0 +1,49 @@
+
+#--- Big Endian(java 原生) to Little Endian(一般語言 C,C++,C#,python) ---#
+public static int byteArrayToLeInt(byte[] b) {
+    final ByteBuffer bb = ByteBuffer.wrap(b);
+    bb.order(ByteOrder.LITTLE_ENDIAN);
+    return bb.getInt();
+}
+
+public static byte[] leIntToByteArray(int i) {
+    final ByteBuffer bb = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE);
+    bb.order(ByteOrder.LITTLE_ENDIAN);
+    bb.putInt(i);
+    return bb.array();
+}
+\\
+ByteBuffer _intShifter = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE)
+                                   .order(ByteOrder.LITTLE_ENDIAN);
+
+public byte[] intToByte(int value) {
+    _intShifter.clear();
+    _intShifter.putInt(value);      
+    return _intShifter.array();
+}
+
+public int byteToInt(byte[] data)
+{
+    _intShifter.clear();
+    _intShifter.put(data, 0, Integer.SIZE / Byte.SIZE);
+    _intShifter.flip();
+    return _intShifter.getInt();
+}
+
+ public static byte[] getLittle_endian (int number)
+ {
+        byte[] array=new byte[2];
+        
+        ByteBuffer bf=ByteBuffer.allocate(4);
+        bf.order(ByteOrder.LITTLE_ENDIAN);
+        bf.putInt(number);
+        bf.flip();
+        
+        bf.get(array);
+        
+        return array;
+ }
+
+
+
+#---  ---#
