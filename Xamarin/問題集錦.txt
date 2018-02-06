@@ -1,0 +1,15 @@
+在xamarin android drawable 加入xml無法使用 
+出現錯誤如下:
+
+Severity	Code	Description	Project	File	Line	Suppression State
+Error		1: error: Error: No resource found that matches the given name (at 'background' with value '@drawable/btn_black2d').	XamarinAndroid_ICM	C:\work\Git\icm-android\XamarinAndroid_ICM\Resources\layout\fragment_setting.xml		
+
+在csproj下 加入檔案文字如下:(IDE自動產生)
+    <AndroidResource Include="Resources\drawable\logo_in_app.png" />
+    <TransformFile Include="Resources\drawable\btn_black2d.xml" />
+    <AndroidResource Include="Resources\drawable\btn_black3d.xml" />
+如下修改:
+    <AndroidResource Include="Resources\drawable\logo_in_app.png" />
+    <AndroidResource Include="Resources\drawable\btn_black2d.xml" />
+    <AndroidResource Include="Resources\drawable\btn_black3d.xml" />
+rebuild後，可正常使用
