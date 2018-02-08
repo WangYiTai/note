@@ -1,3 +1,6 @@
+https://wizardforcel.gitbooks.io/w3school-sql/content/index.html
+
+
 # 查尋 id 最大值資料
 select * , FROM_UNIXTIME(DiagTimestamp/1000)
 from lv_data 
@@ -9,3 +12,41 @@ limit 500;
 
 # 備註 long 轉成時間 (如上) # 
 FROM_UNIXTIME(DiagTimestamp/1000)
+
+DELETE FROM table_name [WHERE Clause]
+
+# 刪除/修改資料
+
+delete from 表格; 
+
+delete from 表格 where 欄位 = V;
+
+update 表格 set 欄位1 = V1 where 欄位2 = V2
+
+/*-------------------------------------------------------*/
+How do I show the schema of a table in a MySQL database?
+
+EXPLAIN db_name.table_name;
+DESCRIBE db_name.table_name;
+SHOW FIELDS FROM db_name.table_name;
+SHOW COLUMNS FROM db_name.table_name;
+SHOW CREATE TABLE yourTable;
+
+SELECT COLUMN_NAME, TABLE_NAME,table_schema
+FROM INFORMATION_SCHEMA.COLUMNS;
+
+SELECT `table_schema` 
+FROM `information_schema`.`tables` 
+WHERE `table_name` = 'whatever';
+
+SELECT
+  COLUMN_NAME, DATA_TYPE 
+FROM
+  INFORMATION_SCHEMA.COLUMNS 
+WHERE
+  TABLE_SCHEMA = 'db_name'
+AND
+  TABLE_NAME = 'table_name';
+/*-------------------------------------------------------*/
+
+
