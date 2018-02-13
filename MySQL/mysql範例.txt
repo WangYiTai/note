@@ -1,5 +1,5 @@
 https://wizardforcel.gitbooks.io/w3school-sql/content/index.html
-
+http://wiki.jikexueyuan.com/project/mysql/
 
 # 查尋 id 最大值資料
 select * , FROM_UNIXTIME(DiagTimestamp/1000)
