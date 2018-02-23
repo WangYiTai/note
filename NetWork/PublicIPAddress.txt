@@ -1,0 +1,107 @@
+http://whatismyipaddress.com/
+http://whatismyip.org
+https://www.whatismyip.com/what-is-my-public-ip-address/
+http://ip4.me/
+http://ip.w69b.com/
+http://www.ip-adress.eu/
+http://www.j4.com.tw/james/remoip.php
+https://www.maxmind.com/zh/locate-my-ip-address
+
+http://ip.42.pl/raw
+http://checkip.dyndns.org/
+https://ident.me/
+http://checkip.dyndns.org/
+https://api.ipify.org/
+http://myip.dnsomatic.com/
+http://www.trackip.net/ip
+http://www.trackip.net/ip?json
+http://ip.jsontest.com/
+
+Windows version:
+
+nslookup myip.opendns.com. resolver1.opendns.com
+curl icanhazip.com
+nslookup . ifcfg.me
+telnet myip.gelma.net
+
+//////////////////////
+
+Create a file named ip.vbs and copy the following into it:
+
+Option Explicit
+Dim http : Set http = CreateObject( "MSXML2.ServerXmlHttp" )
+http.Open "GET", "http://icanhazip.com", False
+http.Send
+Wscript.Echo http.responseText   'or do whatever you want with it
+Set http = Nothing
+
+Execute using
+
+C:\>cscript ip.vbs
+
+//////////////////////
+
+
+Unix version:
+dig +short myip.opendns.com @resolver1.opendns.com
+
+
+/// 程式運用 ///
+
+[C#]
+
+static System.Net.IPAddress GetPublicIp(string serviceUrl = "https://ipinfo.io/ip")
+{
+    return System.Net.IPAddress.Parse(new System.Net.WebClient().DownloadString(serviceUrl));
+}
+
+Where you would use a service with System.Net.WebClient that simply shows the IP address as a string and uses the System.Net.IPAddress object. Here are a few such services*:
+
+    https://ipinfo.io/ip/
+    https://api.ipify.org/
+    https://icanhazip.com/
+    http://checkip.amazonaws.com/ (no SSL)
+    https://wtfismyip.com/text
+    https://myip.dnsdynamic.com/ (though the identity is not trusted and encryption are obsolete)
+
+To get the remote ip address the quickest way possible. You must have to use a downloader, or create a server on your computer.
+
+The downsides to using this simple code: (which is recommended) is that it will take 3-5 seconds to get your Remote IP Address because the WebClient when initialized always takes 3-5 seconds to check for your proxy settings.
+
+ public static string GetIP()
+ {
+            string externalIP = "";
+            externalIP = new WebClient().DownloadString("http://checkip.dyndns.org/");
+            externalIP = (new Regex(@"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"))
+                                           .Matches(externalIP)[0].ToString();
+            return externalIP;
+ }
+
+Here is how I fixed it.. (first time still takes 3-5 seconds) but after that it will always get your Remote IP Address in 0-2 seconds depending on your connection.
+
+public static WebClient webclient = new WebClient();
+public static string GetIP()
+{
+    string externalIP = "";
+    externalIP = webclient.DownloadString("http://checkip.dyndns.org/");
+    externalIP = (new Regex(@"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"))
+                                   .Matches(externalIP)[0].ToString();
+    return externalIP;
+}
+[C# END]
+/// 程式運用結尾 ///
+
+TRACERT 公用程式可以用來檢查封包在網路的哪個節點停止，通常我們可以用 tracert 指令來查詢本機（也就是正在使用的電腦設備）與某個網段間的封包傳遞，這個 TRACERT 公用程式在 Windows、Mac OS X、Linux 等作業系統都有，只不過指令長得有點不一樣，本篇要介紹的是在 Windows 7 的環境下，開啟 cmd 並執行 tracert 指令的方法，若您的作業系統是 Mac OS X 或 Linux，操作流程差不多，但指令是 traceroute 而不是 tracert。
+
+使用方式: tracert [-d] [-h maximum_hops] [-j host-list] [-w timeout] 
+               [-R] [-S srcaddr] [-4] [-6] target_name
+
+選項:
+    -d                 不要將位址解析為主機名稱。
+    -h maximum_hops    搜尋目標所用的最大躍點數目。
+    -j host-list       鬆散的主機清單來源路由 (僅 IPv4)。
+    -w timeout         每個回覆的等候逾時 (毫秒)。
+    -R                 追蹤來回路徑 (僅 IPv6)。
+    -S srcaddr         要使用的來源位址 (僅 IPv6)。
+    -4                 強制使用 IPv4。
+    -6                 強制使用 IPv6。
