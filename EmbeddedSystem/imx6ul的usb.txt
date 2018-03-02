@@ -1,0 +1,15 @@
+飛陵嵌入式提問與回答(目前使用的板子)
+http://bbs.witech.com.cn/thread-68303-1-1.html
+
+linux gadget usb虛擬串口
+http://blog.csdn.net/wuyuwei45/article/details/8926858
+
+https://community.nxp.com/thread/394247
+
+https://compulab.co.il/workspace/mediawiki/index.php5/CL-SOM-iMX6UL:_Linux:_Debian
+
+開發板
+http://www.nxp.com/files/32bit/doc/quick_start_guide/IMX6ULTRALITEQSG.pdf?fasp=1&WT_TYPE=Users%20Guides&WT_VENDOR=FREESCALE&WT_FILE_FORMAT=pdf&WT_ASSET=Documentation&fileExt=.pdf
+https://compulab.co.il/workspace/mediawiki/index.php5/CL-SOM-iMX6UL:_Linux:_Debian
+
+如果新資料會陸續補充

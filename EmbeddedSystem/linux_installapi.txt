@@ -1,0 +1,8 @@
+ubuntu ;
+apt-get
+
+gentoo:
+emerge
+
+fedora
+rum

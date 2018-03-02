@@ -1,0 +1,41 @@
+----------------------------------------------------
+//TS packet
+
+uint8_t *pkt = <your 188 byte TS packet>;
+assert( 0x47 == pkt[0] );
+int16_t pid = ( ( pkt[1] & 0x1F) << 8 ) | pkt[2];
+if ( pid == video_pid ) {
+    // found video stream
+    if( ( pkt[3] & 0x20 ) && ( pkt[4] > 0 ) ) {
+        // have AF
+        if ( pkt[5] & 0x40 ) {
+          // found keyframe
+} } }
+
+---------------------------------------------------
+// H.264 NAL type
+enum H264NALTYPE{
+H264NT_NAL = 0,
+H264NT_SLICE,
+H264NT_SLICE_DPA,
+H264NT_SLICE_DPB,
+H264NT_SLICE_DPC,
+H264NT_SLICE_IDR,
+H264NT_SEI,
+H264NT_SPS,
+H264NT_PPS,
+};
+int H264GetNALType(LPVOID pBSBuf, const LONG nBSLen)
+{
+if ( nBSLen < 5 )  // 不完整的NAL單元
+return H264NT_NAL;
+
+UINT8* pBS = (UINT8 *)pBSBuf;
+ULONG nType = pBS[4] & 0x1F;  // NAL類型在固定的位置上 :)
+if ( nType <= H264NT_PPS )
+return nType;
+
+return 0;
+}
+其中 H264NT_SLICE_IDR 是關鍵幀，H264NT_SLICE 是P幀
+------------------------------------------------------------

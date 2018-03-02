@@ -1,0 +1,58 @@
+ref: https://www.raspberrypi.org/forums/viewtopic.php?f=28&t=155229
+
+Run python script as cgi under apache2 server[my experience]
+
+I was trying to set up a server with Pi 3, so I ran into this python CGI + Apache server path. Here is what I did and it works:
+
+1. Install apache2 first, after the installation you should be able to see the default page with 'localhost' in your browser.
+CODE: SELECT ALL
+sudo apt-get install apache2
+
+2. Enable mods in apache2 for cgi (the codes below showed two ways to do it)
+CODE: SELECT ALL
+sudo a2enmod cgid
+cd /etc/apache2/mods-enabled
+sudo ln -s /etc/apache2/mods-available/cgi.load
+
+3. Modify the config file: /etc/apache2/conf-enabled/serve-cgi-bin.conf to enable python code. 
+CODE: SELECT ALL
+<Directory "usr/lib/cgi-bin">
+             ... ...
+
+             AddHandler cgi-script .py          # add this line (there is a blank between cgi-script and .py)
+</Directory>
+
+4. Notice that the default directory for cgi script is /usr/lib/cgi-bin/, so we will create a test file under this directory.
+CODE: SELECT ALL
+sudo nano /usr/lib/cgi-bin/pytest.py
+
+CODE: SELECT ALL
+#!/usr/bin/python
+
+import cgi
+import cgitb
+cgitb.enable()
+
+print 'Content-type: text/html\n\n'
+print '<h1>Python Script Test</h1>'
+
+
+5. Make the python file executable
+CODE: SELECT ALL
+sudo chmod +x /usr/lib/cgi-bin/pytest.py
+
+6. Restart the apache2 service
+CODE: SELECT ALL
+sudo service apache2 restart
+
+
+Now you should be able to see your test file output under 'localhost/cgi-bin/pytest.py' in your browser.
+
+Note: I was having trouble restart the apache2 service after enable the cgi mods. So I actually reinstalled the apache2, it works after that. Here is how I reinstalled the apache2:
+CODE: SELECT ALL
+sudo apt-get --purge remove apache2
+sudo apt-get autoremove
+sudo apt-get install apache2
+
+
+Hope this experience can help someone. Please let me know if there are anything need to be modified.

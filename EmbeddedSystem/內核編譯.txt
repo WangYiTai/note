@@ -1,0 +1,29 @@
+Linux內核筆記- 內核編譯錯誤及解決方法記錄
+錯誤1:
+
+/bin/sh: 1: lzop: not found
+make[2]: *** [arch/arm/boot/compressed/piggy.lzo] 錯誤 1
+make[2]: *** 正在等待未完成的任務....
+make[1]: *** [arch/arm/boot/compressed/vmlinux] 錯誤 2
+make: *** [uImage] 錯誤 2
+解決辦法:
+
+sudo apt-get install lzop
+ 
+
+錯誤2:
+
+"mkimage" command not found - U-Boot images will not be built
+make[1]: *** [arch/arm/boot/uImage] 錯誤 1
+make: *** [uImage] 錯誤 2
+解決辦法:
+
+sudo apt-get install uboot-mkimage
+
+
+
+LED ON/OFF
+root@freescale /sys/devices/soc0/leds.8/leds/led1$ echo 255 > brightness
+root@freescale /sys/devices/soc0/leds.8/leds/led1$ echo 0 > brightness
+root@freescale /sys/devices/soc0/leds.8/leds/led2$ echo 255 > brightness
+root@freescale /sys/devices/soc0/leds.8/leds/led2$ echo 0 > brightness

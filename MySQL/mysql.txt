@@ -1,0 +1,61 @@
+﻿在Mysql設定檔中，bind-address的設定，通常在安裝完成時，預設值是localhost或是127.0.0.1，意思是這個資料庫只允許這台主機上的連線。
+但是有些時候如果我們有需要分開主機，主機間需要互相進行資料庫連線時，就必須要修改這個設定了，否則會無法連線。
+ 
+1.通常設定檔位置在，/etc/mysql/my.cnf，假設安裝位置有不同，可以用搜尋尋找my.cnf設定檔來開始修改。
+ 
+2.修改設定檔的bind-address，指定允許連線的ip。
+ 
+一般建議，如果會連線到這台資料庫的主機是固定IP，就修改成僅允許那台主機連線，安全性會較佳。
+ 
+例如：
+A主機->連線->B主機(資料庫)，則請將B主機的my.cnf中的bind-address設定為A主機的IP。
+ 
+A主機IP：12.34.56.78
+設定檔：my.cnf
+…
+
+bind-address = 12.34.56.78
+
+...
+如果想要允許任意IP連線，可以改為0.0.0.0(不建議)。
+ 
+3.重啟mysql來載入新設定。
+指令
+service mysql restart
+ 
+
+進入 mysql 執行下列指令:
+
+user table 應該是要多加一筆 username: admin_user 且 host 欄位值為: %(萬用字元)
+表示可由遠端任何位址操作資料庫.
+ex:
+mysql> GRANT ALL PRIVILEGES ON *.* TO root@'%' IDENTIFIED BY 'your_password';
+
+
+一般新增語法
+GRANT ALL ON *.* TO 'username'@'localhost' IDENTIFIED BY 'password' WITH GRANT OPTION;
+
+我是採用這個
+grant SELECT,INSERT,UPDATE,DELETE,CREATE,DROP on dbname.* TO 'taiwanwolf'@'123.111.222.%' identified by 'mypass';
+
+FLUSH PRIVILEGES;
+
+再試一次，搞定!
+
+P.S1: 上述的123.111.222.%是表示只允許此段IP網段連入
+
+P.S 2: iptables 裡面開啟3306可被連線的語法為
+iptables -A INPUT -i eth0 -p tcp -m tcp --dport 3306 -j ACCEPT
+
+
+**mysql-server**
+#mysql -uroot -p
+>grant all privileges on database.table to user @'app服务器IP地址' identified by 'passwd' ;
+>flush privileges;
+
+
+How to INSERT If Row Does Not Exist (UPSERT) in MySQL
+DATA TUTORIAL
+Using INSERT IGNORE
+Using REPLACE
+Using INSERT ... ON DUPLICATE KEY UPDATE

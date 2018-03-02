@@ -1,0 +1,45 @@
+#安裝v4l2驅動
+sudo apt-get install v4l-utils
+
+# 查v4l2裝置
+v4l2-ctl --list-devices
+media-ctl -p
+
+#linux 下看WEBCAM支援格式
+v4l2-ctl --list-formats
+v4l2-ctl -d /dev/video0 --list-formats
+v4l2-ctl -d /dev/video0 --list-framesizes=YUYV
+uvcdynctrl -f
+uvcdynctrl -l
+
+v4l2-ctl --list-ctrls-menus
+
+
+# Linux Media Subsystem
+vlc v4l2:// :v4l2-dev=/dev/video0 :v4l2-width=640 :v4l2-height=480 --sout="#transcode{vcodec=h264,vb=800,scale=1,acodec=mp4a,ab=128,channels=2,samplerate=44100}:rtp{sdp=rtsp://:8554/live.ts}" -I dummy
+
+
+## IZONE UVC 2M Camera. ##
+Listing available frame formats for device video0:
+Pixel format: MJPG (Motion-JPEG; MIME type: image/jpeg)
+  Frame size: 640x480
+    Frame rates: 30
+  Frame size: 1280x720
+    Frame rates: 20
+  Frame size: 320x240
+    Frame rates: 30
+  Frame size: 160x120
+    Frame rates: 30
+  Frame size: 1600x1200
+    Frame rates: 15
+Pixel format: YUYV (YUYV 4:2:2; MIME type: video/x-raw-yuv)
+  Frame size: 640x480
+    Frame rates: 30
+  Frame size: 1280x720
+    Frame rates: 10
+  Frame size: 320x240
+    Frame rates: 30
+  Frame size: 160x120
+    Frame rates: 30
+  Frame size: 1600x1200
+    Frame rates: 5

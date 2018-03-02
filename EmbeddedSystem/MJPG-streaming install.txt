@@ -1,0 +1,16 @@
+
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get dist-upgrade
+sudo apt-get install cmake libjpeg8-dev imagemagick libv4l-dev
+#如果缺少 /usr/include/linux/videodev.h
+sudo ln -s /usr/include/linux/videodev2.h /usr/include/linux/videodev.h
+
+#下載編譯安裝
+git clone https://github.com/jacksonliam/mjpg-streamer.git
+cd mjpg-streamer/mjpg-streamer-experimental/
+make
+sudo make install
+
+#設定環境變數
+echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:/usr/local/lib:/usr/local/lib/mjpg-streamer" | sudo tee -a ~/.bashrc

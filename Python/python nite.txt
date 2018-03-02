@@ -1,0 +1,10 @@
+Q: ImportError: No module named packaging.version
+A:
+pip install packaging==16.8 appdirs==1.4.0
+pip install setuptools==34.0.1
+pip install --ignore-installed setuptools
+
+
+http://anthonyhuang521.blogspot.tw/2016/06/mingwmsys-libusb-win32-pcmcu.html
+http://www.jollen.org/blog/2008/01/libusb_hello_world.html
+http://twed2k.org/viewthread.php?action=printable&tid=264666

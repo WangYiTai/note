@@ -1,0 +1,96 @@
+這篇可能未能針對你的問題回答，但對於註解的部分，僅分享我個人
+在 PHP 註解使用上的經驗分享來提供一些參考
+
+PHP 提供三種註解方式
+
+1) 區塊 /* ... */
+
+通常使用在變數、類別或函式前面的區塊註解，並給予帶有 "@" 開頭的特殊
+註解字串，方便 phpDocumentor、doxygen 這類工具自動產生 api 文件。
+
+
+    /**
+     * 類別註解
+     *
+     * @copyright (c) 2013, Liao San-Kai
+     */
+    class Demo {
+
+       /**
+        * 變數註解
+        *
+        * @var string
+        */
+        private $author;
+
+       /**
+        * 函式註解
+        *
+        * @param int $num 參數說明
+        * @return void
+        */
+        public function show($num) {
+
+        }
+   }
+
+
+
+2) 單行 //
+
+大部分使用在對於程式碼的說明，盡可能將當時的想法，為什麼
+要這麼做寫出來。即便說明可能很長，也要使用多個 // 來
+註解，而不直接用 /* */。
+
+    function test($param) {
+
+        // 這是一行對於程式碼的註解
+        $data = is_array($param) ? $param : array();
+
+
+        // 這段是一個比較詳細的註解，因為註解內容相
+        // 對比較長，所以需要分段來撰寫。但不使用/**/
+        // 僅使用多個單行來註解
+        foreach($data as $key => $value) {
+            // ... (略) ...
+        }
+    }
+
+
+
+3) 特殊 #
+
+雖然和 "//" 一樣是單行註解，但我將它使用在於設定檔臨時註解，也就是
+它可能在未來還會透過消取註解來重新啟用。例如下列範例，我透過 # 註解
+來將 auth、codebench 模組暫停使用。
+
+    Kohana::modules(array(
+        "image" => MODPATH . "image",
+        #"auth" => MODPATH . "auth",
+        "cache" => MODPATH . "cache",
+        "orm" => MODPATH . "orm",
+        #"codebench" => MODPATH . "codebench",
+    ));
+
+4) 區塊註解開關
+我們可以利用//* ... //*/的寫法來作為區塊註解的開關
+<?php
+    echo "不會影響到";
+    //*區塊註解開關
+    if ($confition) {
+        echo "要註解的區塊";
+    }
+    //*/
+    echo "不會影響到";
+?>
+
+藉由刪除/加入開頭的斜線作為開啟或關閉區塊
+<?php
+    echo "不會影響到";
+    /*區塊註解開關
+    if ($confition) {
+        echo "要註解的區塊";
+    }
+    //*/
+    echo "不會影響到";
+?>

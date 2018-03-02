@@ -1,0 +1,42 @@
+﻿
+如何使用呢？首先创建通用Adapter的对象，传入必要参数。
+
+
+
+            Vito.PhoneControl.Adapter.CommonAdapter<Models.MainButton> comAdapter =
+                new PhoneControl.Adapter.CommonAdapter<Models.MainButton>(this, Resource.Layout.MainBlandGridItem, items);
+
+
+
+实现通用Adapter里面注册的事件：
+
+
+
+comAdapter.OnGetView += comAdapter_OnGetView;
+
+
+
+//事件方法实现：
+
+    View comAdapter_OnGetView(int position, View convertView, ViewGroup parent, Models.MainButton item, PhoneControl.Adapter.ViewHolder viewHolder)
+        {
+
+            //通过ViewHolder获取对象并赋值
+            viewHolder.GetView<TextView>(Resource.Id.textViewModeName).Text = item.Text;
+            var imageView = viewHolder.GetView<SquareImageView>(Resource.Id.SquareImageModelICOPath);
+            imageView.SetImageResource(item.ImageID);
+            return viewHolder.GetConvertView();
+        }
+
+
+
+最后将通用Adapter对象赋值给ListView的Adapter属性：
+
+
+
+  Listview.Adapter = comAdapter;
+
+
+
+这样我们不需要新建Adapter类就实现了对ListView的数据绑定，精简了大量代码。
+

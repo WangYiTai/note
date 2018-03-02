@@ -1,0 +1,58 @@
+查詢封包路由路徑 (TRACERT)
+
+
+DOS MIS常用指令
+
+ipconfig /all ← 列出完整網路組態
+ipconfig /release 
+ipconfig /renew ← 手動更新網路組態
+
+tracert ← 追蹤連線路徑
+pathping ← 顯示封包丟失比率
+
+nslookup ← 透過DNS查詢主機ip
+EX:
+nslookup tw.yahoo.com
+nslookup 
+server 新位址 ← 可查出該DNS是否有更新此筆資料。
+
+arp ← 可看網卡卡號
+
+net share ← 觀看開放分享的資料夾
+net share 資料夾名稱 /d ← 刪除分享功能
+net share 共享名稱=資料夾路徑 /users:數字（可連線進入數量）
+EX:
+net share abc=c:\new user:1 ← 分享名稱abc實體路徑為該電腦c槽new資料夾，同時可連線1人。
+
+netview ← 列出區域網路所分享資源的電腦
+也可 net view 電腦名稱 or IP
+
+netstat -a ←列出以開啟的port
+nbtstat -a 電腦名稱 or IP ←查詢區域網路電腦的資訊
+
+net config server ←顯示區域網路伺服器資訊
+net config server /hidder:yes(no) ← 隱藏或解除隱藏
+
+ftp 網址 or ip ←內建ftp指令，可進入ftp站台。
+get 檔案名稱  ← 下載檔案 
+put 檔案名稱  ← 上傳檔案
+bye ← 離開ftp模式
+
+dis * > c:\a.txt ← 將dis指令寫到c槽的a.txt檔內
+
+
+執行指令
+
+control userpasswords2
+設定使用者帳戶，可將進入windows歡迎畫面拿掉。
+可以使登入使用者是帶著密碼進入的，方便連到其他網域時省去驗證步驟。
+
+mstsc
+遠端桌面連線指令，單純快速呼喚。
+
+gpedit.msc
+群組原則，設定使用者權限用。
+
+msconfig
+系統設定公用程式，在這邊我只會拿來檢查是否啟動時有異常物件，不知道其他用途。
+

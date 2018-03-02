@@ -1,0 +1,10 @@
+# NFS rootfs 本更 uboot 把计
+setenv bootargs console=ttySAC0,115200 root=/dev/nfs rw nfsroot=192.168.2.87:/home/ami/Desktop/filesystem/new ip=192.168.2.12:192.168.2.87:192.168.2.87:255.255.255.0:dma6410:eth0:off
+
+#砞﹚u-boot縉魁跋丁(New)                  
+setenv bootcmd "nand read c0008000 0x100000 300000;bootm c0008000"
+setenv kernel "tftp 0xc0200000 zImage;nand erase 0x100000 0x300000;nand write 0xc0200000 0x100000 0x300000"
+setenv rootfs "tftp 0xc0200000 eabi_smallroot_v1.5.2.cramfs;nand erase 0x400000 0x3000000;nand write 0xc0200000 0x400000 0x3000000"
+
+u-boot ㄏノ
+http://processors.wiki.ti.com/index.php/Booting_Linux_kernel_using_U-Boot

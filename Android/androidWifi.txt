@@ -1,0 +1,210 @@
+1.首先要在AndroidManifest.xml加入Wi-Fi讀取權限與更改Wi-Fi權限 :
+
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+
+2.接下來就是在程式端(.java)控制Wi-Fi的設定囉 :
+
+//首先取得Wi-Fi服務控制Manager
+WifiManager mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+
+※ Wi-Fi偵測 :
+//先判斷是否有開啟Wi-Fi，有開啟則回傳true沒有則回傳false
+if(mWifiManager.isWifiEnabled())
+{
+        //重新掃描Wi-Fi資訊
+        mWifiManager.startScan();
+        //偵測周圍的Wi-Fi環境(因為會有很多組Wi-Fi，所以型態為List)
+        mWifiScanResultList = mWifiManager.getScanResults();
+        //手機內已存的Wi-Fi資訊(因為會有很多組Wi-Fi，所以型態為List)
+    mWifiConfigurationList = mWifiManager.getConfiguredNetworks();
+        //目前已連線的Wi-Fi資訊
+        mWifiInfo = mWifiManager.getConnectionInfo();
+        
+        for(int i = 0 ; i < mWifiScanResultList.size() ; i++ )
+        {
+             //手機目前周圍的Wi-Fi環境
+             SSID (Wi-Fi名稱) = mWifiScanResultList.get(i).SSID ;
+             LEVEL (Wi-Fi訊號強弱) = mWifiScanResultList.get(i).level) ;
+        }
+        
+        for(int i = 0 ; i < mWifiConfigurationList.size() ; i++ )
+        {
+             //手機內已儲存(已連線過)的Wi-Fi資訊
+             SSID (Wi-Fi名稱) = mWifiConfigurationList.get(i).SSID ;
+             NETWORKID (Wi-Fi連線ID) = mWifiConfigurationList.get(i).networkId ;
+        }
+        
+        //目前手機已連線(現在連線)的Wi-Fi資訊
+        SSID (Wi-Fi名稱) = mWifiInfo.getSSID() ;
+        NETWORKID (Wi-Fi連線ID) = mWifiInfo.getNetworkId() ;
+        IPADRRESS (Wi-Fi連線位置) = mWifiInfo.getIpAddress() ;
+        IP (Wi-Fi IP位置) = String.format("%d.%d.%d.%d", (IPADRRESS & 0xff), (IPADRRESS >> 8 & 0xff), (IPADRRESS >> 16 & 0xff),( IPADRRESS >> 24 & 0xff)) ;
+}
+else 
+{
+        //把Wi-Fi開啟
+        mWifiManager.setWifiEnabled(true);
+        Toast.makeText(MainActivity.this, "Wi-Fi開啟中", Toast.LENGTH_SHORT).show();
+}
+
+※ Wi-Fi連線 :
+//選擇欲連線的Wi-Fi ID帶入即可進行連線
+int NETWORKID = 已連線過的Wi-Fi ID ;
+mWifiManager.enableNetwork(NETWORKID,true);
+
+※ Wi-Fi中斷 :
+//中斷目前的Wi-Fi連線訊號
+mWifiManager.disconnect();
+
+
+
+
+///******///
+view plaincopy to clipboardprint?
+package com.yarin.android.Examples_08_08;  
+import java.util.List;  
+import android.content.Context;  
+import android.net.wifi.ScanResult;  
+import android.net.wifi.WifiConfiguration;  
+import android.net.wifi.WifiInfo;  
+import android.net.wifi.WifiManager;  
+import android.net.wifi.WifiManager.WifiLock;  
+public class WifiAdmin  
+{  
+    //定義WifiManager物件  
+    private WifiManager mWifiManager;  
+    //定義WifiInfo物件  
+    private WifiInfo mWifiInfo;  
+    //掃描出的網路連接清單  
+    private List<ScanResult> mWifiList;  
+    //網路連接清單  
+    private List<WifiConfiguration> mWifiConfiguration;  
+    //定義一個WifiLock  
+    WifiLock mWifiLock;  
+    //構造器  
+    public  WifiAdmin(Context context)  
+    {  
+        //取得WifiManager對象  
+        mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);  
+        //取得WifiInfo對象  
+        mWifiInfo = mWifiManager.getConnectionInfo();  
+    }  
+    //打開WIFI  
+    public void OpenWifi()  
+    {  
+        if (!mWifiManager.isWifiEnabled())  
+        {  
+            mWifiManager.setWifiEnabled(true);  
+              
+        }  
+    }  
+    //關閉WIFI  
+    public void CloseWifi()  
+    {  
+        if (!mWifiManager.isWifiEnabled())  
+        {  
+            mWifiManager.setWifiEnabled(false);   
+        }  
+    }  
+    //鎖定WifiLock  
+    public void AcquireWifiLock()  
+    {  
+        mWifiLock.acquire();  
+    }  
+    //解鎖WifiLock  
+    public void ReleaseWifiLock()  
+    {  
+        //判斷時候鎖定  
+        if (mWifiLock.isHeld())  
+        {  
+            mWifiLock.acquire();  
+        }  
+    }  
+    //創建一個WifiLock  
+    public void CreatWifiLock()  
+    {  
+        mWifiLock = mWifiManager.createWifiLock("Test");  
+    }  
+    //得到配置好的網路  
+    public List<WifiConfiguration> GetConfiguration()  
+    {  
+        return mWifiConfiguration;  
+    }  
+    //指定配置好的網路進行連接  
+    public void ConnectConfiguration(int index)  
+    {  
+        //索引大於配置好的網路索引返回  
+        if(index > mWifiConfiguration.size())  
+        {  
+            return;  
+        }  
+        //連接配置好的指定ID的網路  
+        mWifiManager.enableNetwork(mWifiConfiguration.get(index).networkId, true);  
+    }  
+    public void StartScan()  
+    {  
+        mWifiManager.startScan();  
+        //得到掃描結果  
+        mWifiList = mWifiManager.getScanResults();  
+        //得到配置好的網路連接  
+        mWifiConfiguration = mWifiManager.getConfiguredNetworks();  
+    }  
+    //得到網路清單  
+    public List<ScanResult> GetWifiList()  
+    {  
+        return mWifiList;  
+    }  
+    //查看掃描結果  
+    public StringBuilder LookUpScan()  
+    {  
+        StringBuilder stringBuilder = new StringBuilder();  
+        for (int i = 0; i < mWifiList.size(); i++)  
+        {  
+            stringBuilder.append("Index_"+new Integer(i + 1).toString() + ":");  
+            //將ScanResult資訊轉換成一個字串包  
+            //其中把包括：BSSID、SSID、capabilities、frequency、level  
+            stringBuilder.append((mWifiList.get(i)).toString());  
+            stringBuilder.append("\n");  
+        }  
+        return stringBuilder;  
+    }  
+    //得到MAC地址  
+    public String GetMacAddress()  
+    {  
+        return (mWifiInfo == null) ? "NULL" : mWifiInfo.getMacAddress();  
+    }  
+    //得到接入點的BSSID  
+    public String GetBSSID()  
+    {  
+        return (mWifiInfo == null) ? "NULL" : mWifiInfo.getBSSID();  
+    }  
+    //得到IP地址  
+    public int GetIPAddress()  
+    {  
+        return (mWifiInfo == null) ? 0 : mWifiInfo.getIpAddress();  
+    }  
+    //得到連接的ID  
+    public int GetNetworkId()  
+    {  
+        return (mWifiInfo == null) ? 0 : mWifiInfo.getNetworkId();  
+    }  
+    //得到WifiInfo的所有資訊包  
+    public String GetWifiInfo()  
+    {  
+        return (mWifiInfo == null) ? "NULL" : mWifiInfo.toString();  
+    }  
+    //添加一個網路並連接  
+    public void AddNetwork(WifiConfiguration wcg)  
+    {  
+        int wcgID = mWifiManager.addNetwork(wcg);   
+        mWifiManager.enableNetwork(wcgID, true);   
+    }  
+    //斷開指定ID的網路  
+    public void DisconnectWifi(int netId)  
+    {  
+        mWifiManager.disableNetwork(netId);  
+        mWifiManager.disconnect();  
+    }  
+}
+

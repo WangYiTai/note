@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+  <!--
+  網頁儲存格式ANSI, 可顯示中文
+  <meta http-equiv="Content-Type" content="text/html; charset=BIG5">
+  <meta property="og:locale" content="zh_TW">
+  -->
+  <!--  網頁儲存格式 UTF-8 , 可顯示中文  -->
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>C 與 C++ 結合注意事項</title>
+  </head>
+  <body>
+    <p>C 與 C++ 結合注意事項</p>
+	<ol>
+    <li>副檔名為 .c 的檔案由 C compiler 編譯。</li>
+    <li>副檔名為 .cpp 的檔案由C++ compiler 編譯。</li>
+    <li>每個 function 都有供內部使用的名稱，且在 C 與 C++ 之下的內部名稱並不相同。</li>
+    <pre>
+例如:
+
+void plus(int a, int b);
+
+其在C之下的內部名稱可能是 _plus；
+而在C++之下的內部名稱卻是 _plus_int_int
+(註：也正因為如此C++才能overload名字相同，但參數的變數型態不同的functions)
+    </pre>
+    <li>當compiler在編譯一個function時，compiler會產生一個內部名稱。</li>
+    <dl>
+    <dt>以下是各種可能發生的情況：</dt>
+    <dd>＠ 當 C compiler 看到一個正常的 function 的宣告(declaration, function prototype)，它永遠都產生 C style 的內部名稱。</dd>
+    <dd>＠ 當 C++ compiler 看到一個正常的 function 的宣告，它產生 C++ style 的內部名稱。</dd>
+    <dd>＠ 當 C++ compiler 看到一個使用 extern "C" function 的宣告，它產生 C style 的內部名稱。</dd>
+    </dl>
+    <li>當 compiler 在編譯一個 function call 時，compiler 會它會使用內部名稱。之後，linker 再用該內部名稱去找那個 function。</li>
+    <dl>
+    <dt>以下是各種可能發生的情況：</dt>
+    <dd>＠ 當 C compiler 看到一個 function call (該 function 正常宣告), 它會使用 C style 的內部名稱(永遠如此)。
+        之後，linker 用該內部名稱去 locate 該 function。</dd>
+    <dd>＠ 當 C++ compiler 看到一個 function call (該 function正常宣告), 它會使用 C++ style 的內部名稱。
+        之後，linker 用該內部名稱去 locate 該 function。</dd>
+    <dd>＠ 當 C++ compiler 看到一個 function call (該 function 的宣告出現在 extern "C" scope (一對大括弧)中，它會使用 C style 的內部名稱。
+        之後，linker 用該內部名稱去 locate 該 function。</dd>
+    </dl>
+    <li>當 compiler 和 linker 的內部名稱不是相同的 style, 則 Linking 時會產生連接錯誤。</li>
+    <li><font color="red">重點一：在 .c 內不要使用到 C++ 的函數，會 link 不到。</font></li>
+    <li><font color="red">重點二：同上，main 內有混用 C 與 C++ 時，需放在 .cpp 內。</font></li>
+    <li>...</li>
+    <li>...</li>
+</ol>
+<br>
+
+<!-- 嵌入純文字  code  -->
+<pre>
+標頭檔範例:
+
+/*
+ * 避免重複載入標頭檔
+ * .C 標頭檔可以與 .CPP 並用
+ */
+#ifndef _FILE_NAME_
+#define _FILE_NAME_
+#ifdef __cplusplus
+extern "C" {
+#endif
+  void foo();
+  void bar();
+#ifdef __cplusplus
+}
+#endif  // __cplusplus
+#endif // _FILE_NAME_
+
+</pre>
+  </body>
+</html>

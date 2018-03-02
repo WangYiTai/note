@@ -1,0 +1,14 @@
+﻿node.js     用npm指令管理套件;如同apt-get一樣
+npm安裝有分本地和全區的,有下  -g 就是全區的, 則否只存在在目前指定目錄下.
+
+
+Q:
+win7 下模組已經安裝,卻無法使用該模組.
+Windows下 NodeJS 全局安装 modules 后在应用中 require 不到的解决方案
+Error: Cannot find module 'xxxx'
+A:
+rem for future
+setx NODE_PATH %AppData%\npm\node_modules
+rem for current session
+set NODE_PATH=%AppData%\npm\node_modules
+

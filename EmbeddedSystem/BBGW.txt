@@ -1,0 +1,7 @@
+首頁
+https://beagleboard.org/green-wireless
+比較
+https://beagleboard.org/blog/2016-07-07-seeedstudio-beaglebone-green-wireless/
+操作
+http://linux.vbird.org/linux_basic/0540kernel.php
+http://linux.vbird.org/linux_basic/redhat6.1/linux_10kernel.php

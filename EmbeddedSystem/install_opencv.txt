@@ -1,0 +1,36 @@
+sudo apt-get install libblas-dev        ## 1-2 minutes
+sudo apt-get install liblapack-dev      ## 1-2 minutes
+sudo apt-get install gfortran           ## 2-3 minutes
+sudo apt-get install python-setuptools  ## ?
+sudo easy_install scipy                 ## 2-3 hours
+## previous might also work: python-scipy without all dependencancies
+sudo apt-get install python-matplotlib  ## 1 hour
+
+
+route add -net 192.168.2.0 netmask 255.255.255.0 gw 192.168.2.1
+traceroute -n tw.yahoo.com
+
+
+sudo iptables -A FORWARD -i eth0 -o uap0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+sudo iptables -A FORWARD -i uap0 -o eth0 -j ACCEPT
+iptables-restore < /etc/iptables.ipv4.nat
+
+cd ~
+wget https://github.com/Itseez/opencv/archive/3.1.0.zip -O opencv-3.1.0.zip
+unzip opencv-3.1.0.zip
+
+
+cd ~
+wget https://github.com/Itseez/opencv_contrib/archive/3.1.0.zip -O opencv_contrib-3.1.0.zip
+unzip opencv_contrib-3.1.0.zip
+
+
+cd ~/opencv
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=RELEASE\
+ -DCMAKE_INSTALL_PREFIX=/usr/local\
+ -DINSTALL_C_EXAMPLES=ON\
+ -DINSTALL_PYTHON_EXAMPLES=ON\
+ -DOPENCV_EXTRA_MODULES_PATH=~/opencv_contrib/modules\
+ -DBUILD_EXAMPLES=ON ..

@@ -1,0 +1,22 @@
+
++++ FOR RASPBERRY PI 3 +++
+
+## 設定 30 FRAMES 會有一個 KEY(I) FRAME ##
+struct v4l2_ext_control         ctrl;
+struct v4l2_ext_controls        ctrl_s;
+
+ctrl.id = V4L2_CID_MPEG_VIDEO_H264_I_PERIOD;
+ctrl_s.ctrl_class = V4L2_CTRL_CLASS_MPEG;  
+ctrl_s.count = 1;  
+ctrl_s.controls = &ctrl;  
+ctrl.value = 30;
+ioctl(fd, VIDIOC_S_EXT_CTRLS, &ctrl_s);
+
+##以下參數不能使用會錯誤,使用過後下一次就不能使用##
+V4L2_CID_MPEG_VIDEO_H264_I_FRAME_QP
+V4L2_CID_MPEG_VIDEO_H264_P_FRAME_QP
+V4L2_CID_MPEG_VIDEO_H264_MAX_QP
+V4L2_CID_MPEG_VIDEO_H264_MIN_QP
+
+
+

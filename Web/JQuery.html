@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>JQuery</title>
+  </head>
+  <body>
+    <script type="Text/JavaScript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
+	<script type='text/javascript'>
+	  $(function(){
+	    $("#clickme").click(function(){
+	      $("#test").toggle();
+	    });
+	  });
+	</script>
+    <div id="clickme">點我吧!</div>
+    <div id="test">
+      我是 Test , 你看到了嗎?
+    </div>
+  </body>
+</html>

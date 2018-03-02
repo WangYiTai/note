@@ -1,0 +1,35 @@
+﻿開發板: BeagleBone Green Wireless:
+
+Key Features
+
+Processor: AM3358 1 GHz ARM® Cortex-A8
+512 MB DDR3 RAM
+4 GB 8-bit eMMC on-board flash storage
+3D graphics accelerator
+NEON floating-point accelerator
+2x PRU 32-bit microcontrollers
+USB client for power & communications
+4* USB 2.0 host
+Wi-Fi 802.11 b/g/n 2.4 GHz and Bluetooth 4.1 LE
+2x46 pin headers
+2xGrove connectors
+-----------------------------------------------------------
+
+
+uboot : 
+enable usb gadget?
+usb 開機
+SD 開機
+wifi 使用? wifi 載入檔案開機?
+flash 操作(讀寫,燒錄)
+
+
+kernel:
+kernel 裁剪
+driver 新增
+
+root filesystem:
+裁剪
+DIY
+
+

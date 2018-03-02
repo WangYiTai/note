@@ -1,0 +1,36 @@
+#!/bin/sh
+
+sudo apt-get update && sudo apt-get upgrade
+#Install Apache
+sudo apt-get install apache2 apache2-utils -y
+#Install PHP
+sudo apt-get install -y  libapache2-mod-php5 php5 php-pear php5-xcache php5-mysql php5-curl php5-gd
+#enabled  CGI module
+sudo a2enmod cgi
+# create a index file
+sudo echo "<?php phpinfo(); ?>" | sudo tee /var/www/html/index.php
+#Install MySQL
+sudo apt-get install -y mysql-server 
+sudo apt-get install -y mysql-client
+
+# To check to see if mysql is running , issue the following command
+sudo service mysql status
+# If it is not, try the following
+sudo service mysql start
+
+#Install phpMyAdmin
+sudo apt-get install -y phpmyadmin
+
+# To set up under Apache all you need to do is include the following line in /etc/apache2/apache2.conf. 
+# Include /etc/phpmyadmin/apache.conf
+#sudo /etc/init.d/apache2 reload
+
+
+#
+#sudo ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf.d/phpmyadmin.conf
+#sudo /etc/init.d/apache2 reload
+
+
+#sudo ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf-available/phpmyadmin.conf
+#sudo a2enconf phpmyadmin
+#sudo /etc/init.d/apache2 reload

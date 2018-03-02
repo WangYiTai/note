@@ -1,0 +1,24 @@
+http://derekmolloy.ie/beaglebone/getting-started-usb-network-adapter-on-the-beaglebone/
+http://x-slam.com/shi_yong_bbb_de_usb_gadget_gong_neng_zhi_g_serial
+http://x-slam.com/shi_yong_bbb_de_usb_gadget_gong_neng
+
+http://blog.csdn.net/zy812248258/article/details/39253989
+http://nis-embedded.blogspot.tw/2013/09/beaglebone-black-usb-device-gadget.html
+https://www.youtube.com/watch?v=K3vtG_xOJhQ
+
+echo 8 > /proc/sys/kernel/printk
+echo standby > /sys/power/state
+echo mem > /sys/power/state
+
+//*************disk***********//
+[shutdown] reboot suspend
+// OK
+echo reboot > /sys/power/disk
+echo disk > /sys/power/state
+// OK 馬上重開
+echo shutdown > /sys/power/disk
+echo disk > /sys/power/state
+// OK 馬上重開
+echo suspend > /sys/power/disk
+echo disk > /sys/power/state
+

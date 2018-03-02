@@ -1,0 +1,174 @@
+關鍵字 (keyword) 為具有語法功能的保留字 (reserved word) ， PHP 的關鍵字如下列表
+
+__halt_compiler()	abstract	and	array()	as
+break	callable	case	catch	class
+clone	const	continue	declare	default
+die()	do	echo	else	elseif
+empty()	enddeclare	endfor	endforeach	endif
+endswitch	endwhile	eval()	exit()	extends
+final	for	foreach	function	global
+goto	if	implements	include	include_once
+instanceof	insteadof	interface	isset()	list()
+namespace	new	or	print	private
+protected	public	require	require_once	return
+static	switch	throw	trait	try
+unset()	use	var	while	xor
+
+Swift 總計有以下的關鍵字
+
+__COLUMN__	__FILE__	__FUNCTION__	__LINE__
+as	break	case	class
+continue	default	deinit	do
+dynamicType	else	enum	extension
+fallthrough	false	for	func
+if	import	in	init
+internal	is	let	operator
+private	protocol	public	nil
+return	self	Self	static
+struct	subscript	super	switch
+true	typealias	var	where
+while			
+
+另有些只在特定區域保留的關鍵字
+
+associativity	convenience	dynamic	didSet
+final	get	infix	inout
+lazy	left	mutating	none
+nonmutating	optional	override	postfix
+precedence	prefix	Protocol	required
+right	set	Type	unowned
+weak	willSet
+
+關鍵字 (keyword) 為具有語法功能的保留字 (reserved word) ， Python 的關鍵字，如以下列表
+
+False	class	finally	is	return
+None	continue	for	lambda	try
+True	def	from	nonlocal	while
+and	del	global	not	with
+as	elif	if	or	yield
+assert	else	import	pass	
+break	except	in	raise	
+
+
+JavaScript 的保留字 (reserved word) 包括關鍵字 (keyword) 、未來保留字 (future reserved word) 、三個字面常數 (literal) ，分別是 null 、 true 、 false 。
+
+關鍵字為具有語法功能的標記，如下表
+break	delete	function	return	typeof
+case	do	if	switch	var
+catch	else	in	this	void
+continue	finally	instanceof	throw	while
+default	for	new	try	with
+
+
+未來保留字為將來有打算列入關鍵字之中的，如下表
+abstract	double	implements	private	throws
+boolean	enum	import	protected	transient
+byte	export	int	public	volatile
+char	extends	interface	short	
+class	final	long	static	
+const	float	native	super	
+debugger	goto	package	synchronized
+關鍵字 (keyword) 為具有語法功能的保留字 (reserved word) ，Java 的關鍵字共有 50 個，如以下列表
+
+abstract	continue	for	new	switch
+assert***	default	goto*	package	synchronized
+boolean	do	if	private	this
+break	double	implements	protected	throw
+byte	else	import	public	throws
+case	enum****	instanceof	return	transient
+catch	extends	int	short	try
+char	final	interface	static	void
+class	finally	long	strictfp**	volatile
+const*	float	native	super	while
+
+
+關鍵字 (keyword) 為具有語法功能的保留字 (reserved word) ， C++ 的關鍵字共有 73 個，如以下列表
+
+and	const_cast	if	register	typedef
+and_eq	default	inline	reinterpret_cast	typeid
+asm	delete	int	return	typename
+auto	do	long	short	union
+bitand	double	mutable	signed	unsigned
+bitor	dynamic_cast	namespace	sizeof	using
+bool	else	new	static	virtual
+break	enum	not	static_cast	void
+case	explicit	not_eq	struct	volatile
+catch	export	operator	switch	wchar_t
+char	false	or	template	while
+class	float	or_eq	this	xor
+compl	for	private	throw	xor_eq
+const	friend	protected	true	
+continue	goto	public	try	
+
+文字編輯器	text editor
+原始程式碼	source code
+字元	character
+檔案	file
+副檔名	extension
+整合開發環境	Integrated Development Environment, IDE
+關鍵字	keyword
+保留字	reserved word
+修飾子	modifier
+宣告	declare
+註解	comment
+識別字	identifier
+變數	variable
+方法	method
+參數	parameter
+類別	class
+屬性	field
+物件	object
+物件導向程式語言	object-oriented programming language
+Java 虛擬機器	Java Virtual Machine, JVM
+呼叫	call
+參考	reference
+強型態	strong typing
+宣告	declaration
+資料型態	data type
+建構子	constructor
+
+類別	class
+物件	object
+關鍵字	keyword
+宣告	declare
+成員	member
+資料	data
+函數	function
+建構子	constructor
+變數	variable
+成員變數	member variable
+成員函數	member function
+回傳值	return value
+存取標籤	access label
+作用域運算子	scope operator
+編譯器	compiler
+封裝	encapsulation
+關鍵字	keyword
+保留字	reserved word
+整數類型態	integral types
+浮點數類型態	floating-point types
+修飾詞	modifier
+宣告	declaration
+定義	definition
+控制陳述	control flow
+結構化程式設計	structured programming
+循序結構	sequence structure
+選擇結構	selection structure
+重複結構	repetition structure
+例外處理	exception handling
+物件	object
+運算子	operator
+程式語言	programming language
+腳本語言	script language
+整合開發環境	integrated development environment
+副檔名	extension
+註解	comment
+關鍵字	keyword
+保留字	reserved word
+框架	framework
+識別字	identifier
+程式庫	library
+宣告	declare
+變數	variable
+字串	string
+資料型態	data type

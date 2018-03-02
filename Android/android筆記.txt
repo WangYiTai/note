@@ -1,0 +1,202 @@
+android 開發筆記
+
+# get Drawable 2017/07/26
+
+Mono for Android (C#)
+
+Drawable icon = Resources.GetDrawable(Resource.Drawable.Icon);
+Android SDK (Java)
+
+Resources res = getResources();
+Drawable icon = res.getDrawable(R.drawable.Icon);
+
+
+03-28 11:25:05.887 I/Choreographer( 7790): Skipped 323 frames!  The application may be doing too much work on its main thread.
+
+
+protected abstract void BLEConnetedAction();
+protected abstract void BLEDisconnetedAction();
+
+WiFi Parking_D6476C0FACC4
+
+
+Install-Package Xamarin.Android.Support.Percent -Version 25.1.1
+Install-Package Xamarin.Android.Support.Percent -Version 23.4.0.1
+
+RadioImageButton
+telnet www.google.com 80
+
+GET / HTTP/1.1
+host: www.google.com
+
+首先，我們先取得今天日期的年、月、日
+ 
+for /f "tokens=1-4 delims=-/ " %%i IN ("%date%") DO (
+set year=%%i
+set month=%%j
+set day=%%k
+) 
+再來，我們取得當下時間的時、分、秒、百分之一秒
+ 
+for /f "tokens=1-4 delims=:." %%i IN ("%time%") DO (
+set hour=%%i
+set minute=%%j
+set second=%%k
+set centisecond=%%l
+) 
+之後要組合含有日期、時間的字串就容易多了：
+ 
+
+
+textColor = Color.parseColor("#FFFFFF");
+textColorDark = Color.parseColor("#55555");
+
+textColor = Color.parseColor("#FFFFFF");
+textColorDark = Color.parseColor("#949394");
+
+    compile 'com.android.support:appcompat-v7:23.1.1'
+
+
+https://github.com/anastr/SpeedView
+
+
+import android.content.Context;  
+import android.graphics.Paint;  
+import android.util.AttributeSet;  
+import android.widget.TextView;  
+  
+public class CustomTextView extends TextView {  
+  
+    private static float DEFAULT_MIN_TEXT_SIZE = 10;  
+    private static float DEFAULT_MAX_TEXT_SIZE = 20;  
+  
+    // Attributes  
+    private Paint testPaint;  
+    private float minTextSize, maxTextSize;  
+  
+    public CustomTextView(Context context, AttributeSet attrs) {  
+        super(context, attrs);  
+        initialise();  
+    }  
+  
+    private void initialise() {  
+        testPaint = new Paint();  
+        testPaint.set(this.getPaint());  
+  
+        // max size defaults to the intially specified text size unless it is  
+        // too small  
+        maxTextSize = this.getTextSize();  
+  
+        if (maxTextSize <= DEFAULT_MIN_TEXT_SIZE) {  
+            maxTextSize = DEFAULT_MAX_TEXT_SIZE;  
+        }  
+  
+        minTextSize = DEFAULT_MIN_TEXT_SIZE;  
+    };  
+  
+    /** 
+     * Re size the font so the specified text fits in the text box * assuming 
+     * the text box is the specified width. 
+     */  
+    private void refitText(String text, int textWidth) {  
+        if (textWidth > 0) {  
+            int availableWidth = textWidth - this.getPaddingLeft()  
+                    - this.getPaddingRight();  
+            float trySize = maxTextSize;  
+            testPaint.setTextSize(trySize);  
+            while ((trySize > minTextSize)  
+                    && (testPaint.measureText(text) > availableWidth)) {  
+                trySize -= 1;  
+                if (trySize <= minTextSize) {  
+                    trySize = minTextSize;  
+                    break;  
+                }  
+                testPaint.setTextSize(trySize);  
+            }  
+            this.setTextSize(trySize);  
+        }  
+    };  
+  
+    @Override  
+    protected void onTextChanged(CharSequence text, int start, int before,  
+            int after) {  
+        super.onTextChanged(text, start, before, after);  
+        refitText(text.toString(), this.getWidth());  
+    }  
+  
+    @Override  
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {  
+        if (w != oldw) {  
+            refitText(this.getText().toString(), w);  
+        }  
+    }  
+}
+
+public class SingleLineZoomTextView extends TextView {
+
+    private Paint mPaint;
+    private float mTextSize;
+
+    public SingleLineZoomTextView(Context context) {
+        super(context);
+        // TODO Auto-generated constructor stub
+    }
+    public SingleLineZoomTextView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        // TODO Auto-generated constructor stub
+    }
+    public SingleLineZoomTextView(Context context, AttributeSet attrs,
+            int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        // TODO Auto-generated constructor stub
+    }
+    /**
+     * getTextSize 返回值是以圖元(px)為單位的，而 setTextSize() 預設是 sp 為單位
+     * 因此我們要傳入圖元單位 setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+     */
+    private void refitText(String text, int textWidth) {
+        if (textWidth > 0) {
+            mTextSize = this.getTextSize();//這個返回的單位為px
+            mPaint = new Paint();
+            mPaint.set(this.getPaint());
+            int drawWid = 0;//drawableLeft，Right，Top，Buttom 所有圖片的寬
+            Drawable[] draws = getCompoundDrawables();
+            for (int i = 0; i < draws.length; i++) {
+                if(draws[i]!= null){
+                    drawWid += draws[i].getBounds().width();
+                }
+            }
+            //獲得當前TextView的有效寬度
+            int availableWidth = textWidth - this.getPaddingLeft()
+                    - this.getPaddingRight()- getCompoundDrawablePadding()- drawWid;
+            //所有字元所占圖元寬度
+            float textWidths = getTextLength(mTextSize, text);
+            while(textWidths > availableWidth){
+                mPaint.setTextSize(--mTextSize);//這裡傳入的單位是 px
+                textWidths = getTextLength(mTextSize, text);
+            }
+            this.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);//這裡設置單位為 px
+        }
+    }
+
+    /**
+     * @param textSize
+     * @param text
+     * @return 字串所占圖元寬度
+     */
+    private float getTextLength(float textSize,String text){
+        mPaint.setTextSize(textSize);
+        return mPaint.measureText(text);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        refitText(getText().toString(), this.getWidth());
+    }
+
+}
+
+
+
+http://oldgrayduck.blogspot.tw/2013/01/androidasynctask-thread.html

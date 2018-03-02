@@ -1,0 +1,578 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Doxygen簡介</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+</head>
+<body>
+<h1 align="center">簡介Doxygen</h1>
+<br>
+<div align="right">作者：<a href="mailto:garylee@ecosine.com.tw">Gary W. Lee</a><br>
+</div>
+<br>
+<hr width="100%" size="2">
+<h3>什麼是Doxygen?</h3>
+Doxygen 是一個程式的文件產生工具，可將程式中的特定註解轉換成為說明文件。通常我們在寫程式時，或多或少都會寫上註解，但是對於其他人而言，要直接探索程式裡的註解，與打撈鐵達尼號同樣的辛苦。大部分有用的註解都是屬於針對函式，類別等等的說明。所以，如果能依據程式本身的結構，將註解經過處理重新整理成為一個純粹的參考手冊，對於後面利用您的程式碼的人而言將會減少許多的負擔。不過，反過來說，整理文件的工作對於您來說，就是沈重的負擔。<br>
+<br>
+一個好的程式設計師，在寫程式時，都會在適當的地方加上合適的註解。如果，能夠在撰寫註解時，稍微符合某種格式，接著就可以透過一個工具程式依據程式結構及您的註解產生出漂亮的文件。這將令許多工作繁重的程式設計師有時間多喝幾杯咖啡。<br>
+<br>
+Doxygen 就是這樣的一個工具。在您寫註解時，稍微按照一些它所制訂的規則。接著，他就可以幫您產生出漂亮的文件了。因此，Doxygen 的使用可分為兩大部分。首先是特定格式的註解撰寫，第二便是利用Doxygen的工具來產生文件。<br>
+<br>
+目前Doxygen可處理的程式語言包含：<br>
+<ul>
+  <li>C/C++</li>
+  <li>Java</li>
+  <li>IDL (Corba, Microsoft及KDE-DCOP類型)&#160;&#160;  </li>
+</ul>
+而可產生出來的文件格式有：<br>
+<ul>
+  <li>HTML</li>
+  <li>XML</li>
+  <li>LaTeX</li>
+  <li>RTF</li>
+  <li>Unix Man Page</li>
+</ul>
+而其中還可衍生出不少其他格式。如有了LaTeX 文件後，就可以透過一些工具產生出PS或是PDF檔案。<br>
+<br>
+在多國語言的支援方面，Doxygen 目前可支援的約有2,30種。自Doxygen 1.2.16開始支援繁體中文(這正是小弟做的好事)。所以在目前一些Open
+Source 的程式文件產生器中，Doxygen 算是相當完整的一套。在程式語言處理上面，Doxygen也算是少數在Borland C++ Builder
+的語法下還能夠正常運作的工具之一（若非如此，小弟也不會推薦它）。<br>
+<br>
+本文的目的是希望在經過仔細閱讀本文之後能夠給大家一個概略性的瞭解。以便可以很容易的上手使用Doxygen。至於Doxygen本身的詳細使用，各位可以參考隨著Doxygen
+所附的文件。實際上，Doxygen 自己的使用手冊就是使用Doxygen 產生的。您可以看到他實際上能夠產生遠比Reference Book更複雜的文件。<br>
+<br>
+<hr width="100%" size="2">
+<h3>安裝Doxygen</h3>
+Doxygen 的安裝可說十分的簡單，本文僅介紹binary檔案的安裝，若您有興趣從source code重新compile起來，請自行查閱參考手冊。<br>
+<br>
+首先，請您先至<a href="http://www.doxygen.org">doxygen 的網站</a>上面抓取最新版本的doxygen 回來。目前，只要您是Linux,
+Solaris, Mac OS X, HP-UX, 甚至是UnixWare，都有compile好的binary版本可以抓取。如果是Windows
+95/98/ME/NT/2000/XP，甚至還有Setup的版本可以抓取。所以安裝過程可說十分簡單。只要給予正確的安裝目錄，相信一般在安裝上是不會遇到什麼問題的。<br>
+<br>
+另外，如果您是Linux或是Windows，可以另外抓取Doxygen Wizard的程式。這是一個輔助工具，可以很快的幫您建立一個Doxygen
+的組態檔案。透過這個組態檔案，您就可以很快的將文件產生出來。另外，若沒有使用Doxygen Wizard，還是可以使用一般的文字編輯器將這個組態檔製作出來。<br>
+<br>
+若安裝成功，您應該可以看到doxygen 這個執行檔出現在您的系統中。若是Windows 平台，則可看到在程式集中有Doxygen 這個Folder出現。<br>
+<br>
+<hr width="100%" size="2">
+<h3>設定Project的doxygen組態</h3>
+Doxygen 產生文件可以分為三個步驟。一是為Project 建立組態檔，二是在程式碼中加上符合Doxygen所定義註解格式。三是使用Doxygen來產生註解。<br>
+<br>
+因此，第一步就是為您的Project 製作Doxygen 的組態檔案。這個所謂的組態檔案，格式其實與很簡單。就是一些Key 與值的設定。每個設定為一行。若第一行開頭為"#"
+表示該行為註解。Doxygen 會忽略它。每個設定行的格式有兩種，分別如下：<br>
+<blockquote>TAG = value [value, ...]<br>
+</blockquote>
+及<br>
+<blockquote>TAG += value [value, ...]<br>
+</blockquote>
+第一種形式是最常見的，也就是要設定一個TAG (也就是一個Key )，他的值為右邊所定義的部分。原則上每個值都是單一的英文字，如果您要定義的值有空白字元包含在內，可使用雙引號將它括住。如果要定義的值超過一個以上，可使用逗號","予以分隔開來。<br>
+<br>
+如果您要定義的TAG 是屬於表列型態的，也就是他會有很多的值分別以逗號隔開。在Doxygen 組態檔中允許您在不同的地方重複定義。只是後面的定義應使用上面所說的第二種形式。此種形式會將前後兩個定義的值合併在一起。<br>
+<br>
+知道這個基本格式後，剩下就是根據各個TAG 的意義來進行設定。關於TAG 的定義很多，此處我們僅針對必要用到的TAG 進行說明，剩下的部分請自行翻閱使用說明。<br>
+<br>
+由於Doxygen 的TAG 還算不少，為了方便使用，Doxygen 自身提供了一個方便的選項，可以幫您建立一份空白的Doxygen檔案(Doxygen
+是Doxygen 預設的組態檔名)。<br>
+<br>
+<blockquote><i>&gt; doxygen Doxygen</i><br>
+</blockquote>
+&#160;&#160;&#160; <br>
+透過這個命令，您可以得到一個Doxygen 檔案，接下來就可使用一般的文字編輯器來進行編輯。<br>
+<br>
+下面將針對幾個必要的TAG 進行說明：<br>
+<br>
+<table cellpadding="2" cellspacing="2" border="1" width="80%">
+  <tbody>
+    <tr>
+      <td valign="top" width="20%">PROJECT_NAME</td>
+      <td valign="top">Project 的名字，以一個單字為主，多個單字請使用雙引號括住。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%">PROJECT_VERSION<br>
+      </td>
+      <td valign="top">Project的版本號碼。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">OUTPUT_DIRECTORY<br>
+      </td>
+      <td valign="top">輸出路徑。產生的文件會放在這個路徑之下。如果沒有填這個路徑，將會以目前所在路徑來作為輸出路徑。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">OUTPUT_LANGUAGE<br>
+      </td>
+      <td valign="top">輸出語言。預設為English。1.2.16 版後，您可以使用Chinese-Traditional
+來輸出中文繁體的格式。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">INPUT<br>
+      </td>
+      <td valign="top">指定載入或找尋要處理的程式碼檔案路徑。這邊是一個表列式的型態。並且可指定檔案及路徑。舉例來說若您有a.c,
+b.c, c.c 三個檔案。您可使用INPUT = a.c, b.c, c.c 的方式。若您給定一個目錄，該目錄下面所有檔案都會被處理。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">FILE_PATTERNS<br>
+      </td>
+      <td valign="top">如果您的INPUT Tag 中指定了目錄。您可以透過這個Tag來要求Doxygen在處理時，只針對特定的檔案進行動作。例如：您希望對目錄下的副檔名為.c,
+.cpp及.h的檔案作處理。您可設定FILE_PATTERNS = *.c, *.cpp, *.h。&#160;&#160;&#160;&#160; <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">RECURSIVE<br>
+      </td>
+      <td valign="top">這是一個布林值的Tag，只接受YES或NO。當設定為YES時，INPUT所指定目錄的所有子目錄都會被處理。&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">EXCLUDE<br>
+      </td>
+      <td valign="top">如果您有某幾個特定檔案或是目錄，不希望經過Doxygen處理。您可在這個Tag中指定。&#160;&#160;&#160; <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">EXCLUDE_PATTERNS<br>
+      </td>
+      <td valign="top">&#160;類似於FILE_PATTERNS的用法，只是這個Tag是供EXCLUDE所使用。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">SOURCE_BROWSER<br>
+      </td>
+      <td valign="top">如果設定為YES，則Doxygen會產生出原始檔案的列表，以供查閱。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">INLINE_SOURCES<br>
+      </td>
+      <td valign="top">如果設定為YES ，則程式碼也會被嵌入於說明文件中。&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">ALPHABETICAL_INDEX<br>
+      </td>
+      <td valign="top">如果設定為YES，則一個依照字母排序的列表會加入在產生的文件中。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">GENERATE_HTML<br>
+      </td>
+      <td valign="top">若設定為YES ，就會產生HTML版本的說明文件。HTML文件是Doxygen預設產生的格式之一。
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">HTML_OUTPUT<br>
+      </td>
+      <td valign="top">HTML文件的輸出目錄。這是一個相對路徑，所以實際的路徑為OUTPUT_DIRECTORY加上HTML_OUTPUT。這個設定預設為html。&#160;&#160;&#160;&#160;&#160;&#160;
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">HTML_FILE_EXTENSION<br>
+      </td>
+      <td valign="top">HTML文件的副檔名。預設為.html。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">HTML_HEADER<br>
+      </td>
+      <td valign="top">要使用在每一頁HTML文件中的Header。如果沒有指定，Doxygen會使用自己預設的Header。
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">HTML_FOOTER<br>
+      </td>
+      <td valign="top">要使用在每一頁HTML文件中的Footer。如果沒有指定，Doxygen會使用自己預設的Footer。
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">HTML_STYLESHEET<br>
+      </td>
+      <td valign="top">您可給定一個CSS 的設定，讓HTML的輸出結果更完美。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">GENERATE_HTMLHELP<br>
+      </td>
+      <td valign="top">如設定為YES，Doxygen會產生一個索引檔。這個索引檔在您需要製作windows 上的HTML格式的HELP檔案時會用的上。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">GENERATE_TREEVIEW<br>
+      </td>
+      <td valign="top">若設定為YES，Doxygen會幫您產生一個樹狀結構，在畫面左側。這個樹狀結構是以JavaScript所寫成。所以需要新版的Browser才能正確顯示。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">TREEVIEW_WIDTH<br>
+      </td>
+      <td valign="top">用來設定樹狀結構在畫面上的寬度。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">GENERATE_LATEX<br>
+      </td>
+      <td valign="top">設定為YES 時，會產生LaTeX 的文件。不過您的系統必需要有安裝LaTeX 的相關工具。&#160;&#160;&#160;
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">LATEX_OUTPUT<br>
+      </td>
+      <td valign="top">LaTeX文件的輸出目錄，與HTML_OUTPUT用法相同，一樣是指在OUTPUT_DIRECTORY之下的路徑。預設為latex。&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">LATEX_CMD_NAME<br>
+      </td>
+      <td valign="top">LaTeX程式的命令名稱及檔案所在。預設為latex。&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">GENERATE_RTF<br>
+      </td>
+      <td valign="top">若設定為YES ，則會產生RTF 格式的說明檔。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">RTF_OUTPUT<br>
+      </td>
+      <td valign="top">與HTML_OUTPUT 用法相同，用來指定RTF 輸出檔案路徑。預設為rtf。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">GENERATE_MAN<br>
+      </td>
+      <td valign="top">若設定為YES ，則會產生Unix Man Page 格式的說明文件。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">MAN_OUTPUT<br>
+      </td>
+      <td valign="top">與HTML_OUTPUT 用法相同，用來指定Man Page的輸出目錄。預設為man。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">GENERATE_XML<br>
+      </td>
+      <td valign="top">若設定為YES ，則會產生XML 格式的說明文件。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">ENABLE_PREPROCESSING<br>
+      </td>
+      <td valign="top">若設定為YES ，則Doxygen 會啟動C 的前置處理器來處理原始檔。&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">PREDEFINED<br>
+      </td>
+      <td valign="top">可以讓您自行定義一些巨集。類似於gcc 中的-D選項。<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+若上面這些基本的Tag 都設定正確，接下來就是將您的Source Code <br>
+註解修改成為正確的格式。若您覺得用一般文字編輯器來編輯組態檔<br>
+很麻煩，建議您可以使用Doxygen Wizard這個工具程式。他可以很快<br>
+的建構出您所需要的Doxygen檔案。<br>
+<br>
+<hr width="100%" size="2">
+<h3>撰寫正確格式的註解 </h3>
+並非所有程式碼中的註解都會被Doxygen 所處理。您必需依照正確的<br>
+格式撰寫。原則上，Doxygen 僅處理與程式結構相關的註解，如<br>
+Function，Class ，檔案的註解等。對於Function內部的註解則不做<br>
+處理。Doxygen可處理下面幾種類型的註解。<br>
+<br>
+JavaDoc類型：<br>
+<br>
+<blockquote><code>/**</code><br>
+  <code>&#160;* ... 註解 ...</code><br>
+  <code>&#160;*/</code><br>
+  <code></code></blockquote>
+<br>
+Qt類型：<br>
+<br>
+<blockquote><code>/*!</code><br>
+  <code>&#160;* ... 註解 ...</code><br>
+  <code>&#160;*/</code><br>
+  <code></code></blockquote>
+&#160;&#160;&#160;&#160; <br>
+單行型式的註解：<br>
+<br>
+<blockquote>/// ... 註解 ...<br>
+</blockquote>
+或&#160;&#160;&#160; <br>
+<blockquote>//! ... 註解 ...<br>
+</blockquote>
+&#160;&#160;&#160; <br>
+&#160; <br>
+要使用哪種型態完全看自己的喜好。以筆者自己來說，大範圍的註<br>
+解我會使用JavaDoc 型的。單行的註解則使用"///" 的類型。<br>
+<br>
+此外，由於Doxygen 對於註解是視為在解釋後面的程式碼。也就是<br>
+說，任何一個註解都是在說明其後的程式碼。如果要註解前面的程<br>
+式碼則需用下面格式的註解符號。<br>
+<br>
+<blockquote>/*!&lt; ... 註解 ... */<br>
+/**&lt; ... 註解 ... */<br>
+//!&lt; ... 註解 ...<br>
+///&lt; ... 註解 ...<br>
+</blockquote>
+&#160;&#160;&#160; <br>
+上面這個方式並不適用於任何地方，只能用在class 的member或是<br>
+function的參數上。<br>
+<br>
+舉例來說，若我們有下面這樣的class。<br>
+<br>
+<br>
+<code>&#160;&#160;&#160; class MyClass {<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160; public:<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; int member1 ;<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; int member2:<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; void member_function();<br>
+&#160;&#160;&#160; };</code><br>
+&#160;&#160;&#160; <br>
+加上註解後，就變成這樣：<br>
+<br>
+<code>&#160;&#160;&#160; /**<br>
+&#160;&#160;&#160;&#160; * 我的自訂類別說明 ...<br>
+&#160;&#160;&#160;&#160; */<br>
+&#160;&#160;&#160; class MyClass {<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160; public:<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; int member1 ; ///&lt; 第一個member說明 ...<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; int member2:&#160; ///&lt; 第二個member說明 ...<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; int member_function(int a, int b);<br>
+&#160;&#160;&#160; };<br>
+&#160;&#160;&#160; <br>
+&#160;&#160;&#160; /**<br>
+&#160;&#160;&#160;&#160; * 自訂類別的member_funtion說明 ...<br>
+&#160;&#160;&#160;&#160; *<br>
+&#160;&#160;&#160;&#160; * @param a 參數a的說明<br>
+&#160;&#160;&#160;&#160; * @param b 參數b的說明<br>
+&#160;&#160;&#160;&#160; *<br>
+&#160;&#160;&#160;&#160; * @return 傳回a+b。<br>
+&#160;&#160;&#160;&#160; */ <br>
+&#160;&#160;&#160; int MyClass::member_function( int a, int b ) <br>
+&#160;&#160;&#160; {<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160; return a+b ;<br>
+&#160;&#160;&#160; }</code><br>
+&#160;&#160;&#160; <br>
+當您使用Doxygen 產生說明文件時，Doxygen 會幫您parsing 您的程<br>
+式碼。並且依據程式結構建立對應的文件。然後再將您的註解，依據<br>
+其位置套入於正確的地方。您可能已經注意到，除了一般文字說明外<br>
+，還有一些其他特別的指令，像是@param及@return 等。這正是<br>
+Doxygen 另外一個重要的部分，因為一個類別或是函式其實都有固定<br>
+幾個要說明的部分。為了讓Doxygen 能夠判斷，所有我們就必需使用<br>
+這些指令，來告訴Doxygen 後面的註解是在說明什麼東西。Doxygen <br>
+在處理時，就會幫您把這些部分做特別的處理或是排版。甚至是製作<br>
+參考連結。<br>
+<br>
+首先，我們先說明在Doxygen 中對於類別或是函數註解的一個特定格<br>
+式。<br>
+<br>
+<code>&#160;&#160;&#160; /**<br>
+&#160;&#160;&#160;&#160; * class或function的簡易說明...<br>
+&#160;&#160;&#160;&#160; *<br>
+&#160;&#160;&#160;&#160; * class或function的詳細說明...<br>
+&#160;&#160;&#160;&#160; * ...<br>
+&#160;&#160;&#160;&#160; */</code><br>
+&#160;&#160;&#160;&#160; <br>
+上面這個例子要說的是，在Doxygen 處理一個class 或是function註<br>
+解時，會先判斷第一行為簡易說明。這個簡易說明將一直到空一行的<br>
+出現。或是遇到第一個"." 為止。之後的註解將會被視為詳細說明。<br>
+兩者的差異在於Doxygen 在某些地方只會顯示簡易說明，而不顯示詳<br>
+細說明。如：class 或function的列表。<br>
+<br>
+另一種比較清楚的方式是指定@brief的指令。這將會明確的告訴<br>
+Doxygen，何者是簡易說明。例如：<br>
+<br>
+<code>&#160;&#160;&#160; /**<br>
+&#160;&#160;&#160;&#160; * @brief class或function的簡易說明...<br>
+&#160;&#160;&#160;&#160; *<br>
+&#160;&#160;&#160;&#160; * class或function的詳細說明...<br>
+&#160;&#160;&#160;&#160; * ...<br>
+&#160;&#160;&#160;&#160; */<br>
+</code><br>
+除了這個class 及function外，Doxygen 也可針對檔案做說明，條件<br>
+是該註解需置於檔案的前面。主要也是利用一些指令，通常這部分註<br>
+解都會放在檔案的開始地方。如：<br>
+<br>
+<code>&#160;&#160;&#160; /*! \file myfile.h<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160; \brief 檔案簡易說明<br>
+&#160;&#160;&#160; <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160; 詳細說明.<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160; <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160; \author 作者資訊<br>
+&#160;&#160;&#160; */</code><br>
+<br>
+如您所見，檔案註解約略格式如上，請別被"\" 所搞混。其實，"\" <br>
+與"@" 都是一樣的，都是告訴Doxygen 後面是一個指令。兩種在<br>
+Doxygen 都可使用。筆者自己比較偏好使用"@"。<br>
+<br>
+接著我們來針對一些常用的指令做說明：<br>
+<br>
+<br>
+<table cellpadding="2" cellspacing="2" border="1" width="80%">
+  <tbody>
+    <tr>
+      <td valign="top">@file<br>
+      </td>
+      <td valign="top">檔案的註解說明。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%">@author<br>
+      </td>
+      <td valign="top">作者的資訊<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">@brief<br>
+      </td>
+      <td valign="top">用於class 或function的註解中，後面為class 或function的簡易說明。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">@param<br>
+      </td>
+      <td valign="top">格式為<br>
+      <blockquote>@param arg_name 參數說明<br>
+      </blockquote>
+ 主要用於函式說明中，後面接參數的名字，然後再接關於該參數的說明。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">@return<br>
+      </td>
+      <td valign="top">後面接函數傳回值的說明。用於function的註解中。說明該函數的傳回值。<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">@retval<br>
+      </td>
+      <td valign="top">格式為<br>
+      <blockquote>@retval value 傳回值說明<br>
+      </blockquote>
+主要用於函式說明中，說明特定傳回值的意義。所以後面要先接一個傳回值。然後在放該傳回值的說明。<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+&#160;&#160;&#160;&#160;&#160;&#160;  <br>
+Doxygen 所支援的指令很多，有些甚至是關於輸出排版的控制。您可從Doxygen的使用說明中找到詳盡的說明。<br>
+<br>
+下面我們準備一組example.h 及example.cpp 來說明Doxygen 註解的使用方式：<br>
+<br>
+example.h:<br>
+<br>
+<code>&#160;&#160;&#160; /**<br>
+&#160;&#160;&#160;&#160; * @file 本範例的include檔案。<br>
+&#160;&#160;&#160;&#160; *<br>
+&#160;&#160;&#160;&#160; * 這個檔案只定義example這個class。<br>
+&#160;&#160;&#160;&#160; *<br>
+&#160;&#160;&#160;&#160; * @author garylee@localhost<br>
+&#160;&#160;&#160;&#160; */<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <br>
+&#160;&#160;&#160; #define EXAMPLE_OK&#160; 0&#160;&#160; ///&lt; 定義EXAMPLE_OK的巨集為0。<br>
+&#160;&#160;&#160; <br>
+&#160;&#160;&#160; /**<br>
+&#160;&#160;&#160;&#160; * @brief Example class的簡易說明<br>
+&#160;&#160;&#160;&#160; *<br>
+&#160;&#160;&#160;&#160; * 本範例說明Example class。<br>
+&#160;&#160;&#160;&#160; * 這是一個極為簡單的範例。<br>
+&#160;&#160;&#160;&#160; * <br>
+&#160;&#160;&#160;&#160; */<br>
+&#160;&#160;&#160; class Example {<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160; private:<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; int var1 ; ///&lt; 這是一個private的變數<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160; public:<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; int var2 ; ///&lt; 這是一個public的變數成員。<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; int var3 ; ///&lt; 這是另一個public的變數成員。<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; void ExFunc1(void); <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; int ExFunc2(int a, char b);<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; char *ExFunc3(char *c) ;<br>
+&#160;&#160;&#160; };</code><br>
+&#160;&#160;&#160; <br>
+&#160;&#160;&#160; <br>
+example.cpp:<br>
+<br>
+<code>&#160;&#160;&#160; /**<br>
+&#160;&#160;&#160;&#160; * @file 本範例的程式碼檔案。<br>
+&#160;&#160;&#160;&#160; *<br>
+&#160;&#160;&#160;&#160; * 這個檔案用來定義example這個class的<br>
+&#160;&#160;&#160;&#160; * member function。<br>
+&#160;&#160;&#160;&#160; *<br>
+&#160;&#160;&#160;&#160; * @author garylee@localhost<br>
+&#160;&#160;&#160;&#160; */<br>
+&#160;&#160;&#160; <br>
+&#160;&#160;&#160; /**<br>
+&#160;&#160;&#160;&#160; * @brief ExFunc1的簡易說明<br>
+&#160;&#160;&#160;&#160; *<br>
+&#160;&#160;&#160;&#160; * ExFunc1沒有任何參數及傳回值。<br>
+&#160;&#160;&#160;&#160; */<br>
+&#160;&#160;&#160; void Example::ExFunc1(void)<br>
+&#160;&#160;&#160; {<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160; // empty funcion.<br>
+&#160;&#160;&#160; }<br>
+<br>
+&#160;&#160;&#160; /**<br>
+&#160;&#160;&#160;&#160; * @brief ExFunc2的簡易說明<br>
+&#160;&#160;&#160;&#160; *<br>
+&#160;&#160;&#160;&#160; * ExFunc3()傳回兩個參數相加的值。<br>
+&#160;&#160;&#160;&#160; *<br>
+&#160;&#160;&#160;&#160; * @param a 用來相加的參數。<br>
+&#160;&#160;&#160;&#160; * @param b 用來相加的參數。<br>
+&#160;&#160;&#160;&#160; * @return 傳回兩個參數相加的結果。<br>
+&#160;&#160;&#160;&#160; */<br>
+&#160;&#160;&#160; int ExFunc2(int a, char b)<br>
+&#160;&#160;&#160; {<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160; return (a+b);<br>
+&#160;&#160;&#160; }<br>
+&#160;&#160;&#160; <br>
+&#160;&#160;&#160; /**<br>
+&#160;&#160;&#160;&#160; * @brief ExFunc3的簡易說明<br>
+&#160;&#160;&#160;&#160; *<br>
+&#160;&#160;&#160;&#160; * ExFunc3()只傳回參數輸入的指標。<br>
+&#160;&#160;&#160;&#160; *<br>
+&#160;&#160;&#160;&#160; * @param c 傳進的字元指標。<br>
+&#160;&#160;&#160;&#160; * @retval NULL 空字串。<br>
+&#160;&#160;&#160;&#160; * @retval !NULL 非空字串。<br>
+&#160;&#160;&#160;&#160; */<br>
+&#160;&#160;&#160; char * ExFunc2(char * c)<br>
+&#160;&#160;&#160; {<br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160; return c;<br>
+&#160;&#160;&#160; }&#160;&#160;&#160; </code><br>
+&#160;&#160;&#160; <br>
+上面這兩個檔案很簡單的說明了Doxygen 註解的使用方式。您可依照此要領在你自己的程式碼中加上對應的註解。其實，無論您有無使用Doxygen ，都不妨依照他的格式將註解寫入，一方面是依照他的格式，並不會干擾您程式的運作。另一方面，Doxygen
+所定義的都是基本程式註解應當要有的東西。撰寫清楚的註解是好的程式設計師應當的工作。<br>
+<br>
+<hr width="100%" size="2">
+<h3>製作說明文件</h3>
+當您前面所有的步驟都正確無誤執行後，只需要執行下面的命令就可建立出您要的文件了：<br>
+<br>
+<blockquote><i>&gt; doxygen Doxygen<br>
+  </i></blockquote>
+<br>
+如果有錯誤產生，請檢查您的Doxygen 組態檔設定是否有誤，目錄的存取權限是否足夠。如果輸出的結果不正確，請檢查您的註解是否符合格式。註解的位置是否正確。舉例來說，您不可在說明class
+的註解與class 本身插入其他的程式碼或宣告。否則Doxygen 就無法將註解與該class對應起來。<br>
+<br>
+如果您使用Doxygen Wizard，可直接使用上面的Run 的按鈕或選單項目來製作說明文件。如果是產生HTML文件，在HTML_OUTPUT
+所指定的目錄中的index.html將是您說明文件的首頁。<br>
+<br>
+在中文繁體方面，目前我僅成功製作出HTML與RTF 格式的說明文件。其他格式的過程比較複雜，需要搭配其他工具，有待各位自行嘗試。<br>
+<hr width="100%" size="2"><br>
+</body>
+</html>

@@ -1,0 +1,6 @@
+#win7 wifi dongle ³]©w¦¨ AP
+
+netsh wlan set hostednetwork mode=allow ssid=rpi3-ap key=12345678
+netsh wlan start hostednetwork
+netsh wlan set hostednetwork mode=allow ssid=pi3AP key=12345678
+netsh wlan start hostednetwork

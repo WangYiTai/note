@@ -1,0 +1,30 @@
+openRTSP -it -B 300000 -b 300000  -P 10 -F "%t" rtsp://192.168.2.137:554/ch0_0.h264 
+openRTSP¿ý»s
+
+
+
+raspivid -t 0 -w 1080 -h 720 -fps 25 -hf -b 2000000 -o - | gst-launch-1.0 -v fdsrc ! h264parse ! rtph264pay config-interval=1 pt=96 ! gdppay ! tcpserversink host=192.168.137.89 port=5000
+
+raspivid -o - -t 0 -n | cvlc -vvv stream:///dev/stdin --sout '#rtp{sdp=rtsp://:8554/}' :demux=h264
+
+raspivid -o - -t 0 -n -w 640 -h 480 -fps 30 -pf baseline | cvlc -vvv stream:///dev/stdin --sout '#rtp{sdp=rtsp://:8554}' :demux=h264
+rtsp://192.168.137.102:8554/h264
+raspivid -o - -t 0 -hf -w 640 -h 480 -fps 30 | cvlc -vvv stream:///dev/stdin --sout '#standard(access=http,mux=ts,dst=:8160)' :demux=h264
+
+raspivid -o - -t 99999 -hf -w 640 -h 360 -fps 25|cvlc -vvv stream:///dev/stdin --sout '#standard{access=http,mux=ts,dst=:8090}' :demux=h264
+
+
+LD_LIBRARY_PATH=./ ./mjpg_streamer -i "./input_raspicam.so -x 640-y 480-fps 15 -quality 100" -o "./output_http.so"
+http://192.168.137.102:8080/?action=stream
+
+sudo h264_v4l2_rtspserver/h264_v4l2_rtspserver -F 25 -W 1280 -H 720 -P 8555 /dev/video0
+rtsp://192.168.137.102:8555/unicast
+
+///------------------------
+rtsp run
+openRTSP -4ty -B 3000000 -b 3000000  -P 10 -F $DATE rtsp://192.168.2.137:554/ch0_0.h264
+ffmpeg -r 15 -i rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov -codec copy -hls_list_size 65535 -hls_time 2 "live.m3u8"
+
+///-----------------------------
+mjpg_streamer -i "/usr/local/lib/input_raspicam.so -x 640 -y 480 -fps 15" -o "/usr/local/lib/output_http.so --port 54321"
+/usr/local/lib/mjpg-streamer/output_http.so

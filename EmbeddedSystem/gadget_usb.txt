@@ -1,0 +1,18 @@
+modprobe g_serial idVendor=0x0403 idProduct=0x6001 use_acm=1
+
+kernel/drivers/usb/gadget/g_ether.ko: kernel/drivers/usb/gadget/usb_f_rndis.ko kernel/drivers/usb/gadget/libcomposite.ko kernel/drivers/usb/gadget/u_ether.ko kernel/fs/configfs/configfs.ko
+kernel/drivers/usb/gadget/g_mass_storage.ko: kernel/drivers/usb/gadget/usb_f_mass_storage.ko kernel/drivers/usb/gadget/libcomposite.ko kernel/fs/configfs/configfs.ko
+kernel/drivers/usb/gadget/g_serial.ko: kernel/drivers/usb/gadget/libcomposite.ko kernel/fs/configfs/configfs.ko
+
+
+insmod kernel/fs/configfs/configfs.ko
+insmod kernel/drivers/usb/gadget/u_ether.ko 
+insmod kernel/drivers/usb/gadget/libcomposite.ko 
+insmod kernel/drivers/usb/gadget/usb_f_rndis.ko 
+insmod kernel/drivers/usb/gadget/g_ether.ko 
+
+mount -t g_ether none /dev/gadget
+
+
+root@freescale /$ modprobe g_serial
+modprobe: chdir(3.14.38-6UL_ga-g23c1e14-dirty): No such file or directory

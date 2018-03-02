@@ -1,0 +1,135 @@
+RIFF ( 'AVI' 
+        LIST ( 'hdrl' 
+                'avih' ( <Main AVI Header> ) 
+        LIST ('strl' 
+                'strh' ( <Stream 1 Header> ) 
+                'strf' ( <Stream 1 Format> ) 
+                ['strd'( <Stream 1 optional codec data> ) ]
+                )
+
+        LIST ( 'strl'
+                'strh' ( <Stream 2 Header> ) 
+                'strf' ( <Stream 2 Format> ) 
+                [ 'strd' ( <Stream 2 optional codec data> )]
+                )
+                ...
+        )
+        LIST ( 'movi' 
+                { 
+                        '##dc' ( <compressed DIB> )
+                        | 
+                        LIST ( 'rec '
+                                '##dc' ( <compressed DIB> ) 
+                                '##db' ( <uncompressed DIB> ) 
+                                '##wb' ( <audio data> ) 
+                                '##pc' ( <palette change> ) 
+                                ...
+                         )
+                         } 
+                ... 
+        )
+        [ 'idx1' ( <AVI Index> ) ]
+)
+
+AVI檔格式
+
+AVI（Audio Video Interleaved的縮寫）是一種RIFF（Resource Interchange File Format的縮寫）檔格式，多用於音視頻捕捉、編輯、重播等應用程式中。通常情況下，一個AVI檔可以包含多個不同類型的媒體流（典型的情況下有一個音頻流和一個視頻流），不過含有單一音頻流或單一視頻流的AVI檔也是合法的。AVI可以算是Windows作業系統上最基本的、也是最常用的一種媒體檔格式。
+
+先來介紹RIFF檔格式。RIFF檔使用四字元碼FOURCC（four-character code）來表徵資料類型，比如‘RIFF’、‘AVI ’、‘LIST’等。注意，Windows作業系統使用的位元組順序是little-endian，因此一個四字元碼‘abcd’實際的DWORD值應為0x64636261。另外，四字元碼中像‘AVI ’一樣含有空格也是合法的。
+
+RIFF檔首先含有一個如圖的檔頭結構。
+clip_image001
+RIFF檔結構
+最開始的4個位元組是一個四字元碼‘RIFF’，表示這是一個RIFF檔；緊跟著後面用4個位元組表示此RIFF檔的大小；然後又是一個四字元碼說明文件的具體類型（比如AVI、WAVE等）；最後就是實際的資料。注意檔大小值的計算方法為：實際資料長度 + 4（檔類型域的大小）；也就是說，檔大小的值不包括‘RIFF’域和“檔大小”域本身的大小。
+RIFF檔的實際資料中，通常還使用了列表（List）和塊（Chunk）的形式來組織。列表可以嵌套子列表和塊。其中，列表的結構為：‘LIST’ listSize listType listData ——‘LIST’是一個四字元碼，表示這是一個列表；listSize佔用4位元組，記錄了整個列表的大小；listType也是一個四字元碼，表示本列表的具體類型；listData就是實際的列表資料。注意listSize值的計算方法為：實際的列表資料長度 + 4（listType域的大小）；也就是說listSize值不包括‘LIST’域和listSize域本身的大小。再來看塊的結構：ckID ckSize ckData ——ckID是一個表示塊類型的四字元碼；ckSize佔用4位元組，記錄了整個塊的大小；ckData為實際的塊資料。注意ckSize值指的是實際的塊資料長度，而不包括ckID域和ckSize域本身的大小。（注意：在下面的內容中，將以LIST ( listType ( listData ) )的形式來表示一個列表，以ckID ( ckData )的形式來表示一個塊，如[ optional element ]中括弧中的元素表示為可選項。）
+
+接下來介紹AVI檔格式。AVI檔類型用一個四字元碼‘AVI ’來表示。整個AVI檔的結構為：一個RIFF頭 + 兩個列表（一個用於描述媒體流格式、一個用於保存媒體流資料） + 一個可選的索引塊。AVI檔的展開結構大致如下：
+
+RIFF (‘AVI ’
+      LIST (‘hdrl’
+‘avih’(主AVI資訊頭資料)
+            LIST (‘strl’
+‘strh’ (流的頭資訊資料)
+‘strf’ (流的格式資訊資料)
+                  [‘strd’ (可選的額外的頭資訊資料) ]
+                  [‘strn’ (可選的流的名字) ]
+                  …
+                 )
+             …
+           )
+      LIST (‘movi’
+            { SubChunk | LIST (‘rec ’
+                              SubChunk1
+                              SubChunk2
+                              …
+                             )
+               …
+            }
+            …
+           )
+      [‘idx1’ (可選的AVI索引塊資料) ]
+     )
+首先，RIFF (‘AVI ’…)表徵了AVI文件類型。然後就是AVI檔必需的第一個列表——‘hdrl’列表，用於描述AVI檔中各個流的格式資訊（AVI檔中的每一路媒體資料都稱為一個流）。‘hdrl’列表嵌套了一系列塊和子列表——首先是一個‘avih’塊，用於記錄AVI檔的全局資訊，比如流的數量、視頻圖像的寬和高等，可以使用一個AVIMAINHEADER資料結構來操作：
+
+typedef struct _avimainheader {
+    FOURCC fcc;   // 必須為‘avih’
+    DWORD  cb;    // 本資料結構的大小，不包括最初的8個位元組（fcc和cb兩個域）
+    DWORD  dwMicroSecPerFrame;   // 視頻幀間隔時間（以毫秒為單位）
+    DWORD  dwMaxBytesPerSec;     // 這個AVI檔的最大資料率
+    DWORD  dwPaddingGranularity; // 數據填充的粒度
+    DWORD  dwFlags;         // AVI檔的全局標記，比如是否含有索引塊等
+    DWORD  dwTotalFrames;   // 總幀數
+    DWORD  dwInitialFrames; // 為交互格式指定初始幀數（非交互格式應該指定為0）
+    DWORD  dwStreams;       // 本檔包含的流的個數
+    DWORD  dwSuggestedBufferSize; // 建議讀取本檔的緩存大小（應能容納最大的塊）
+    DWORD  dwWidth;         // 視頻圖像的寬（以圖元為單位）
+    DWORD  dwHeight;        // 視頻圖像的高（以圖元為單位）
+    DWORD  dwReserved[4];   // 保留
+} AVIMAINHEADER;
+然後，就是一個或多個‘strl’子列表。（檔中有多少個流，這裏就對應有多少個‘strl’子列表。）每個‘strl’子列表至少包含一個‘strh’塊和一個‘strf’塊，而‘strd’塊（保存編解碼器需要的一些配置資訊）和‘strn’塊（保存流的名字）是可選的。首先是‘strh’塊，用於說明這個流的頭資訊，可以使用一個AVISTREAMHEADER資料結構來操作：
+typedef struct _avistreamheader {
+     FOURCC fcc;  // 必須為‘strh’
+     DWORD  cb;   // 本資料結構的大小，不包括最初的8個位元組（fcc和cb兩個域）
+FOURCC fccType;    // 流的類型：‘auds’（音頻流）、‘vids’（視頻流）、
+                   //‘mids’（MIDI流）、‘txts’（文字流）
+     FOURCC fccHandler; // 指定流的處理者，對於音視頻來說就是解碼器
+     DWORD  dwFlags;    // 標記：是否允許這個流輸出？調色板是否變化？
+     WORD   wPriority;  // 流的優先順序（當有多個相同類型的流時優先順序最高的為默認流）
+     WORD   wLanguage;
+     DWORD  dwInitialFrames; // 為交互格式指定初始幀數
+     DWORD  dwScale;   // 這個流使用的時間尺度
+     DWORD  dwRate;
+     DWORD  dwStart;   // 流的開始時間
+     DWORD  dwLength;  // 流的長度（單位與dwScale和dwRate的定義有關）
+     DWORD  dwSuggestedBufferSize; // 讀取這個流資料建議使用的緩存大小
+     DWORD  dwQuality;    // 流資料的品質指標（0 ~ 10,000）
+     DWORD  dwSampleSize; // Sample的大小
+     struct {
+         short int left;
+         short int top;
+         short int right;
+         short int bottom;
+}  rcFrame;  // 指定這個流（視頻流或文字流）在視頻主視窗中的顯示位置
+             // 視頻主視窗由AVIMAINHEADER結構中的dwWidth和dwHeight決定
+} AVISTREAMHEADER;
+然後是‘strf’塊，用於說明流的具體格式。如果是視頻流，則使用一個BITMAPINFO資料結構來描述；如果是音頻流，則使用一個WAVEFORMATEX資料結構來描述。
+
+當AVI檔中的所有流都使用一個‘strl’子列表說明了以後（注意：‘strl’子列表出現的順序與媒體流的編號是對應的，比如第一個‘strl’子列表說明的是第一個流（Stream 0），第二個‘strl’子列表說明的是第二個流（Stream 1），以此類推），‘hdrl’列表的任務也就完成了，隨後跟著的就是AVI檔必需的第二個列表——‘movi’列表，用於保存真正的媒體流資料（視頻圖像幀資料或音頻採樣資料等）。那麼，怎麼來組織這些資料呢？可以將資料塊直接嵌在‘movi’列表裏面，也可以將幾個資料塊分組成一個‘rec ’列表後再編排進‘movi’列表。（注意：在讀取AVI檔內容時，建議將一個‘rec ’列表中的所有資料塊一次性讀出。）但是，當AVI檔中包含有多個流的時候，資料塊與資料塊之間如何來區別呢？於是資料塊使用了一個四字元碼來表徵它的類型，這個四字元碼由2個位元組的類型碼和2個位元組的流編號組成。標準的類型碼定義如下：‘db’（非壓縮視頻幀）、‘dc’（壓縮視頻幀）、‘pc’（改用新的調色板）、‘wb’（音縮視頻）。比如第一個流（Stream 0）是音頻，則表徵音頻資料塊的四字元碼為‘00wb’；第二個流（Stream 1）是視頻，則表徵視頻資料塊的四字元碼為‘00db’或‘00dc’。對於視頻資料來說，在AVI資料序列中間還可以定義一個新的調色板，每個改變的調色板資料塊用‘xxpc’來表徵，新的調色板使用一個資料結構AVIPALCHANGE來定義。（注意：如果一個流的調色辦中途可能改變，則應在這個流格式的描述中，也就是AVISTREAMHEADER結構的dwFlags中包含一個AVISF_VIDEO_PALCHANGES標記。）另外，文字流資料塊可以使用隨意的類型碼表徵。
+
+最後，緊跟在‘hdrl’列表和‘movi’列表之後的，就是AVI檔可選的索引塊。這個索引塊為AVI檔中每一個媒體資料塊進行索引，並且記錄它們在檔中的偏移（可能相對於‘movi’列表，也可能相對於AVI檔開頭）。索引塊使用一個四字元碼‘idx1’來表徵，索引資訊使用一個資料結構來AVIOLDINDEX定義。
+
+typedef struct _avioldindex {
+   FOURCC  fcc;  // 必須為‘idx1’
+   DWORD   cb;   // 本資料結構的大小，不包括最初的8個位元組（fcc和cb兩個域）
+   struct _avioldindex_entry {
+      DWORD   dwChunkId;   // 表徵本資料塊的四字元碼
+      DWORD   dwFlags;     // 說明本資料塊是不是關鍵幀、是不是‘rec ’列表等資訊
+      DWORD   dwOffset;    // 本資料塊在文件中的偏移量
+      DWORD   dwSize;      // 本資料塊的大小
+  } aIndex[]; // 這是一個陣列！為每個媒體資料塊都定義一個索引資訊
+} AVIOLDINDEX;
+注意：如果一個AVI檔包含有索引塊，則應在主AVI資訊頭的描述中，也就是AVIMAINHEADER結構的dwFlags中包含一個AVIF_HASINDEX標記。
+
+還有一種特殊的資料塊，用一個四字元碼‘JUNK’來表徵，它用於內部資料的隊齊（填充），應用程式應該忽略這些資料塊的實際意義。
+
+ 

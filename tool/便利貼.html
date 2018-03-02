@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8">
+<title>HTML5中用localStorage實現的便利貼網站</title>
+</head>
+
+<body  bgcolor="black">
+<!--
+<div style="background-color:#e7fde9; width:1000px; height:300px; margin:0 auto;"> HEAD </div>
+<div style="background-color:blue; width:1000px; height:1000px; margin:0 auto;"></div>
+-->
+<input type="text" placeholder="請在此處輸入文本" id="message">
+<select id="note_color">
+    	<option value="LightGoldenRodYellow">yellow</option>
+        <option value="PaleGreen">PaleGreen</option>
+        <option value="LightPink">Pink</option>
+        <option value="LightBlue">LightBlue</option>
+    </select>
+<input type="button" id="save_button" value="存儲">
+<input type="button" id="clear_all" value="清空">
+<ol id="messages">
+</ol>
+
+
+</body>
+<script>
+window.onload = function() {
+	var saveButton = document.getElementById("save_button");
+	saveButton.onclick = save;
+	
+	var clearButton = document.getElementById("clear_all");
+	clearButton.onclick = clearAll;
+	
+	showMessages();
+}
+function save() {
+	var text = document.getElementById("message").value;
+	var color = document.getElementById("note_color").value;
+	var message = {
+		"text": text,
+		"color": color
+	};
+	var key = "message" + (new Date()).getTime();
+	var keys = getKeys();
+	keys.push(key);
+	localStorage.setItem(key, JSON.stringify(message));
+	localStorage.setItem("keys", JSON.stringify(keys));
+	showMessages();
+}
+function clearAll() {
+	localStorage.clear();
+	showMessages();
+}
+function showMessages() {
+	//每次都要刷新
+	var messages = document.getElementById("messages");
+	var messagesChilds = messages.childNodes;
+	//首先清除所有message節點
+	while(messagesChilds.length > 0) {
+		messages.removeChild(messagesChilds[0]);
+	}
+	var keys = getKeys();
+	for(var i = 0; i < keys.length; i++) {
+		var li = document.createElement("li");
+		var message = JSON.parse(localStorage.getItem(keys[i]));
+		
+		li.style.color = message["color"];
+		li.innerHTML = message["text"];
+		messages.appendChild(li);
+	}
+}
+function getKeys() {
+	//獲取Keys的對象
+	
+	//keys是專門存儲localStorage的key的
+	var keys = JSON.parse(localStorage.getItem("keys"));
+	if(keys == null) {
+		keys = [];
+		localStorage.setItem("keys", JSON.stringify(keys));
+	} 
+	return keys;
+}
+</script>
+</html>

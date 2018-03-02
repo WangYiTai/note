@@ -1,0 +1,195 @@
+將python程式打包為一個可執行檔
+PyInstaller 可以用來把 Python 程式打包起來，方便在其他機器上執行省去安裝 Python 以及所使用套件的時間
+
+安裝
+pip install pyinstaller
+
+
+# 參數很多，自已打打--help就知道了
+pyinstaller [options] script [script ...] | specfile
+ 
+# 最簡單的方式，會產生 .spec, build dir以及dist
+# 這樣會將結果以資料夾的方式，放在dist裡面
+pyinstaller main.py
+ 
+# 產生單一執行檔
+pyinstaller -F main.py
+ 
+# 上面的指今，輸出的名字都會和指定的檔案名稱相同
+# 如果想換個名字的話，加上 -n
+pyinstaller -F main.py -n CHANGE_NAME
+
+# 產生 your_script.spec
+pyinstaller --onefile your_script.py
+
+# your_script.spec 內容 修改你要的部份
+
+    exe = EXE(pyz,
+          a.scripts,
+          a.binaries,
+          a.zipfiles,
+          a.datas,
+          name='main',
+          debug=False,
+          strip=False,
+          upx=True,
+          console=True )
+#不要console
+console=False
+
+# 輸出單一執行檔，沒有console
+pyinstaller -F your_script.spec
+
+# ------------------------------------------------#
+PyInstaller 官網
+
+功能：打包給別人用
+
+原理
+
+PyInstaller 分析 code，然後收集需要的 module 和 library 甚至包括 Python interpreter！
+和原始碼放在一個文件夾 或 單一可執行文件 (exe)。
+
+pyinstaller myscript.py
+
+執行以上命令，PyInstaller 會做以下事情：
+建立一個 myscript.spec
+建立一個 build 資料夾
+建立一些 log & 工作檔案在 build 中
+建立一個 dist 資料夾 (此資料夾用來分享給別人)
+建立執行檔在 dist 資料夾
+單一可執行文件 (exe) 運作原理
+將打包的檔案放至 _MEIxxxxxx 的暫存資料夾，再進行執行，故會多出解壓縮的時間 
+
+pyinstaller 常用 options
+
+
+-h, --help 
+說明文件
+
+--upx-dir UPX_DIR
+upx 的資料夾，可壓縮執行檔
+upx 官網
+
+-y, --noconfirm
+直接取代原先資料夾，無需詢問
+
+--clean
+清理
+
+-D, --onedir
+打包成一個資料夾 (預設值)
+
+-F, --onefile
+打包成一個執行檔
+
+--specpath DIR
+設定 spec 存放位置 (default： 目前目錄)
+
+-n NAME, --name NAME
+命名執行檔跟 spec (default：第一個 script 的名字)
+
+-p DIR, --paths DIR
+設定尋找 import 檔案的路徑 (通常為 sys.path)
+
+--hidden-import MODULENAME, --hiddenimport MODULENAME
+手動 import 找不到的 module，此指令可多次使用
+
+--additional-hooks-dir HOOKSPATH
+An additional path to search for hooks. This option can be used multiple times.
+
+--runtime-hook RUNTIME_HOOKS
+Path to a custom runtime hook file. A runtime hook is code that is bundled with the executable and is executed before any other code or module to set up special features of the runtime environment. This option can be used multiple times.
+
+--exclude-module EXCLUDES
+忽略 module or package
+
+--key KEY
+加密，需安裝 PyCrypto
+
+-d, --debug
+debug 用，需執行 exe 才會看見
+
+--noup 
+不使用 upx
+
+-c, --console, --nowindowed
+顯示 cmd 視窗(預設值)
+
+-w, --windowed, --noconsole
+不顯示 cmd 視窗
+
+-i <FILE.ico or FILE.exe,ID or FILE.icns>
+--icon <FILE.ico or FILE.exe,ID or FILE.icns>
+更改 icon
+
+使用 spec
+
+有四個狀況，更改 spec 會較方便
+打包 data file，例：mp3
+打包 run-time libraries
+When you want to add Python run-time options to the executable.
+When you want to create a multiprogram bundle with merged common modules.
+
+只產生 spec
+pyi-makespec options name.py [other scripts ...]
+
+用 spec 打包
+pyinstaller myscript.spec
+
+
+加入 data 檔案
+added_files = [
+         # 第一個參數為放進的檔案，第二個參數表示放進 dist 下的資料夾
+         ( '/mygame/sfx/*.mp3', 'sfx' ) # 將 mp3 放進 sfx 資料夾
+         ( 'src/README.txt', '.' ) # 將 txt 放進 dist 下
+         ]
+    a = Analysis(...
+         datas = added_files,
+         ...
+         )
+
+
+加入 lib 檔案
+a = Analysis(...
+         binaries=[ ( '/usr/lib/libiodbc.2.dylib', 'libiodbc.dylib' ) ],
+         ...
+         )
+
+
+加入 options
+v 顯示詳細 import，需執行 exe 才會看到
+u for unbuffered stdio.
+W 更改警告的行為: W ignore or W once or W error.
+options = [ ('v', None, 'OPTION'), ('W ignore', None, 'OPTION') ]
+a = Analysis( ...
+            )
+...
+exe = EXE(pyz,
+      a.scripts,
+      options,   <--- added line
+      exclude_binaries=...
+      )
+
+特殊應用
+
+window 使用 bat 檔，範例如下 
+pyinstaller --noconfirm --log-level=WARN ^
+            --onefile --nowindow ^
+            --hidden-import=secret1 ^
+            --hidden-import=secret2 ^
+            --icon-file=..\MLNMFLCN.ICO ^
+            myscript.spec
+
+
+檢查如何執行，用 python 執行 或 執行檔
+可用來設定一些檔案的載入，例：icon 
+__file__：未打包時的 py 路徑
+sys._MEIPASS：打包後的資料夾路徑 
+one-folder ： 當前 exe 的資料夾路徑
+one-file ： 暫存的資料夾路徑
+import sys
+if getattr( sys, 'frozen', False ) :
+        # running in a bundle
+else :
+        # running live

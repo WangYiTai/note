@@ -1,0 +1,19 @@
+利用JAXB一行代碼實現 JAVA 和 XML的相互轉換
+
+利用 JAXB 的正常使用方法實現 Java - XML的相互轉換，一般需要3行代碼，但是其自帶的工具類則僅需一行代碼，且不依賴于額外的包：
+
+JAXBContext context = JAXBContext.newInstance(ObjectToConvert.class);
+Unmarshaller u = context.createUnmarshaller();
+return (ObjectToConvert) u.unmarshal(xmlInputStream);
+  
+// becomes
+return (ClassToConvert)JAXB.unmarshal(xmlInputStream, ObjectToConvert.class);
+  
+// and
+JAXBContext context = JAXBContext.newInstance(objectInstanceToConvert.getClass());
+Marshaller m = jc.createMarshaller();
+m.marshal(objectInstanceToConvert, xmlOutputStream);
+  
+// becomes
+JAXB.marshall(objectInstanceToConvert, xmlOutputStream)
+

@@ -1,0 +1,7 @@
+while true;
+do dumpsys meminfo tw.com.icm.vdialogue_f1 | grep "TOTAL SWAP";
+done 
+
+while true;
+do dumpsys meminfo tw.com.icm.vdialogue_f1 | grep "Views";
+done 

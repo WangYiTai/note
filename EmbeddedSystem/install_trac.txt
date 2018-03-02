@@ -1,0 +1,104 @@
+Apache+Subversion+Trac 安裝
+
+分享: 7Headlines facebook PLURK twitter  
+
+變更使用者為 root
+sudo passwd root
+ubuntu 預設 root 空白密碼，但又限制空白密碼無法登入，所以要先變更 root 密碼才能登入。
+sudo su
+登入 root
+安裝 Subversion
+apt-get install subversion
+安裝 subversion
+mkdir -p /var/svn
+建立 svn repository 目錄
+svnadmin create /var/svn/proj1
+建立 proj1 專案
+安裝 Apache2
+apt-get install apache2
+安裝 apache2
+apt-get install libapache2-mod-python
+安裝 mod_python 給 trac 使用
+apt-get install libapache2-svn
+安裝 dav_svn 給 svn 使用
+vi /etc/apache2/conf-enabled/svn.conf
+設定 svn for apache2，請輸入下列文字。
+<Location /svn>
+    DAV svn
+    SVNParentPath /var/svn
+    SVNListParentPath on
+</Location>
+chown -R www-data.www-data /var/svn
+重新設定 svn repository 目錄擁有者為 www-data，這樣才可以用 http 讀取。
+find /var/svn -type d|xargs chmod g+sw
+重新設定 svn repository 目錄內所有目錄加上 group 寫入權限。
+/etc/init.d/apache2 restart
+重新啟動 apache2
+測試 Subversion
+svn co http://localhost/svn/proj1 /tmp/proj1
+checkout proj1 to /tmp
+cd /tmp/proj1
+切換到 svn 專案目錄
+touch index.html
+建立一個測試檔案 index.html
+svn add index.html
+新增測試檔案 index.html 到 svn
+svn commit -m "Added file"
+將變更內容上傳到 svn server，上傳成功會出現下列訊息。
+Adding         index.html
+Transmitting file data .
+Committed revision 1.
+安裝 Trac
+apt-get install python-setuptools
+安裝 python-setuptools 來安裝 trac
+easy_install http://svn.edgewall.org/repos/trac/tags/trac-1.1.5/
+安裝 trac 1.1.5，可以先查看 http://svn.edgewall.org/repos/trac/tags/ 最新版本是多少。
+apt-get install python-sqlite
+安裝 python-sqlite 做為 trac 資料庫
+apt-get install python-subversion
+安裝 python-subversion 給 trac 跟 svn 溝通使用
+mkdir -p /var/trac
+建立 trac project 目錄
+trac-admin /var/trac/proj1 initenv
+建立 proj1 專案，會詢問二個問題，都直接按 Enter 即可。
+vi /var/trac/proj1/conf/trac.ini
+設定 svn for trac，請在檔案結尾加入下列文字。
+[components]
+tracopt.versioncontrol.svn.* = enabled
+
+[repositories]
+.dir = /var/svn/proj1
+.description = Project 1
+.type = svn
+.url = http://192.168.1.123/svn/proj1
+.sync_per_request = true
+tracopt.versioncontrol.svn.*
+在 trac 1.0 之後，預設 svn 是不支援，需要手動設定開啟。
+.dir
+設定 svn repository 專案目錄。
+.description
+svn 專案說明。
+.type
+repository type。
+.url
+svn url，會指向在 trac 上的 Repository URL，所以不可以寫 localhost 喔。
+.sync_per_request
+每一個 http request 自動同步 repository 。
+trac-admin /var/trac/proj1 repository resync "*"
+重新同步 svn 資料，.sync_per_request 沒有設定時，預設為 false，這時每次 svn commit 完要做一次，trac 才會抓到最新資料。
+vi /etc/apache2/conf-enabled/trac.conf
+設定 trac for apache2，請輸入下列文字。
+<Location /trac>
+    SetHandler mod_python
+    PythonInterpreter main_interpreter
+    PythonHandler trac.web.modpython_frontend
+    PythonOption PYTHON_EGG_CACHE /tmp/python_egg_cache
+    PythonOption TracEnvParentDir /var/trac
+</Location>
+chown -R www-data.www-data /var/trac
+重新設定 trac 專案目錄擁有者為 www-data，這樣才可以用 http 讀取。
+find /var/trac -type d|xargs chmod g+sw
+重新設定 trac 專案目錄內所有目錄加上 group 寫入權限。
+/etc/init.d/apache2 restart
+重新啟動 apache2
+在 browser 輸入 http://localhost/trac 就可以看到 trac 系統
