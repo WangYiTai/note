@@ -1,0 +1,231 @@
+# 方法1:
+
+TcpClient MyTcpClient = new TcpClient();
+IAsyncResult MyResult = MyTcpClient.BeginConnect(YourTargetIP, YourTargetPort, null, null);
+MyResult.AsyncWaitHandle.WaitOne(3000, true);//只等三秒
+
+if (!MyResult.IsCompleted)
+{
+
+    MyTcpClient.Close();
+    //作如果沒連上線的事
+
+}
+else if (MyTcpClient.Connected == true)
+{
+
+    //作連上線的事
+}
+
+MyTcpClient.Close();
+
+方法2:
+
+/// <summary>
+/// 偵測指定的伺服器的特定 port 是否可以連接。
+/// </summary>
+/// <param name="host">伺服器名稱或 IP 位址。</param>
+/// <param name="port">Port 號。</param>
+/// <param name="timeOut">連線逾時時間，單位：秒。</param>
+/// <returns></returns>
+
+private bool IsServerConnectable(string host, int port, double timeOut)
+{
+  TcpClient tcp = new TcpClient();
+  DateTime t = DateTime.Now;
+
+  try
+  {
+    IAsyncResult ar = tcp.BeginConnect(host, port, null, null);
+    while (!ar.IsCompleted)
+    {
+      if (DateTime.Now > t.AddSeconds(timeOut))
+      {
+        throw new Exception("Connection timeout!");
+      }
+      System.Threading.Thread.Sleep(100);
+    }
+
+    tcp.EndConnect(ar);
+    tcp.Close();
+    return true;
+  }
+  catch
+  {
+    return false;
+  }
+}
+
+方法3:
+using (TcpClient tcp = new TcpClient())  
+{  
+    IAsyncResult ar = tcp.BeginConnect("127.0.0.1", 80, null, null);  
+    System.Threading.WaitHandle wh = ar.AsyncWaitHandle;
+    try 
+    {  
+       if (!ar.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5), false))  
+       {  
+           tcp.Close();  
+           throw new TimeoutException();  
+       }  
+ 
+        tcp.EndConnect(ar);  
+    }  
+    finally 
+    {  
+        wh.Close();  
+    }  
+}
+
+方法4:
+var client = new TcpClient();
+var result = client.BeginConnect("remotehost", this.Port, null, null);
+
+var success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(1));
+
+if (!success)
+{
+    throw new Exception("Failed to connect.");
+}
+
+// we have connected
+client.EndConnect(result);
+
+方法5:
+
+class TimeOutSocket
+{
+    private static bool IsConnectionSuccessful= false;
+    private static Exception socketexception;
+    private static ManualResetEvent TimeoutObject= new ManualResetEvent(false);
+
+    public static TcpClient Connect(IPEndPoint remoteEndPoint,int timeoutMSec)
+    {
+        TimeoutObject.Reset();
+        socketexception = null;
+
+        string serverip= Convert.ToString(remoteEndPoint.Address);
+        int serverport= remoteEndPoint.Port;          
+        TcpClient tcpclient = new TcpClient();
+       
+        tcpclient.BeginConnect(serverip, serverport,
+            new AsyncCallback(CallBackMethod), tcpclient);
+
+        if (TimeoutObject.WaitOne(timeoutMSec,false))
+        {
+            if (IsConnectionSuccessful)
+            {
+                return tcpclient;
+            }
+            else
+            {
+                throw socketexception;
+            }
+        }
+        else
+        {
+            tcpclient.Close();
+            throw new TimeoutException("TimeOut Exception");
+        }
+    }
+    private static void CallBackMethod(IAsyncResult asyncresult)
+    {
+        try
+        {
+            IsConnectionSuccessful = false;
+            TcpClient tcpclient = asyncresult.AsyncStateas TcpClient;
+            
+            if (tcpclient.Client!= null)
+            {
+                tcpclient.EndConnect(asyncresult);
+                IsConnectionSuccessful = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            IsConnectionSuccessful = false;
+            socketexception = ex;
+        }
+        finally
+        {
+            TimeoutObject.Set();
+        }
+    }
+}
+
+方法6:
+
+ class TimeOutSocket
+        {
+            private static bool IsConnectionSuccessful = false;
+            private static Exception socketexception;
+            private static System.Threading.ManualResetEvent TimeoutObject = new System.Threading.ManualResetEvent(false);
+
+            public static Socket Connect(IPEndPoint remoteEndPoint, int timeoutMSec)
+            {
+                TimeoutObject.Reset();
+                socketexception = null;     
+        
+                Socket socketClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                socketClient.BeginConnect(remoteEndPoint, new AsyncCallback(CallBackMethod), socketClient);
+
+                if (TimeoutObject.WaitOne(timeoutMSec, false))
+                {
+                    if (IsConnectionSuccessful)
+                        return socketClient;
+                    else
+                        throw socketexception;                     
+                }
+                else
+                {
+                    socketClient.Close();
+                    throw new TimeoutException("TimeOut Exception");                    
+                }
+
+            }
+            private static void CallBackMethod(IAsyncResult asyncresult)
+            {
+                try
+                {
+                    IsConnectionSuccessful = false;
+                    Socket socketClient = asyncresult.AsyncState as Socket;
+
+                    if (socketClient != null)
+                    {
+                        socketClient.EndConnect(asyncresult);
+                        IsConnectionSuccessful = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    IsConnectionSuccessful = false;
+                    socketexception = ex;
+                }
+                finally
+                {
+                    TimeoutObject.Set();
+                }
+            }
+        }
+
+方法7:
+
+try {
+???? int timeout = connection timeout (ms);
+???? TcpClient client = new TcpClient ();
+???? Task con_task = client.ConnectAsync (remote_addr, remote_port);
+???? if (! con_task.Wait (timeout)) // Connection refused etc are AggregateException
+???? {
+???????? client.Close ();
+???????? throw new SocketException (10060); // 10060 -> WSAETIMEDOUT
+???? }
+
+???? // *Processing after connection
+
+} catch (SocketException e) {
+??? // timeout with timeout
+} catch (AggregateException e) {
+??? if (e.InnerException is SocketException) {
+??????? // Connection failure Rejected? Socket timeout
+??? }
+}
