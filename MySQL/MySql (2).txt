@@ -1,0 +1,45 @@
+delete from events where timestamp < NOW()
+
+1分鐘前時間(ms)
+SELECT (UNIX_TIMESTAMP(current_timestamp(3))-60)*1000
+
+DELETE FROM cardata WHERE id NOT IN ( SELECT id FROM ( SELECT id FROM cardata ORDER BY id DESC LIMIT 50 ) foo);
+
+
+DELETE FROM `lv_data` WHERE id = 6 && `DiagTimestamp` NOT IN ( SELECT `DiagTimestamp` FROM ( SELECT `DiagTimestamp` FROM `lv_data` Where id = 6 ORDER BY `DiagTimestamp` DESC LIMIT 2 ) foo);
+
+DELETE FROM `lv_data` WHERE id = 7 && `DiagTimestamp` NOT IN ( SELECT `DiagTimestamp` FROM `lv_data` Where id = 7 ORDER BY `DiagTimestamp` DESC LIMIT 2 );
+
+
+SELECT `DiagTimestamp` FROM ( SELECT distinct  `DiagTimestamp` FROM `lv_data` Where id = 8 ORDER BY `DiagTimestamp` DESC LIMIT 2 ) foo
+
+
+DELETE FROM `lv_data` WHERE id = 8 && `DiagTimestamp` NOT IN ( SELECT `DiagTimestamp` FROM ( SELECT distinct  `DiagTimestamp` FROM `lv_data` Where id = 8 ORDER BY `DiagTimestamp` DESC LIMIT 3 ) foo);
+
+
+CREATE TABLE `realtime_table` 
+(
+
+  `ID` int(11) NOT NULL,
+
+  `EcuID` int(11) NOT NULL,
+
+  `LV_ID` int(11) NOT NULL,
+
+  `LV_Val` double NOT NULL,
+
+  `DiagTimestamp` bigint(20) NOT NULL,
+
+  PRIMARY KEY (`ID`,`LV_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+REPLACE INTO `realtime_table` 
+    (ID, EcuID, LV_ID, LV_Val, DiagTimestamp)
+VALUES
+    (1, 7, 558, 1961, 1234567),
+    (1, 7, 555, 1960, 123456789);
+
+
+
