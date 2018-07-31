@@ -1,0 +1,101 @@
+//Rextester.Program.Main is the entry point for your code. Don't change it.
+//Compiler version 4.0.30319.17929 for Microsoft (R) .NET Framework 4.5
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+namespace Rextester
+{
+    public class Person: IEquatable < Person > {
+	public string Name {
+		get;
+		private set;
+	}
+
+	public int Age {
+		get;
+		private set;
+	}
+
+	public Person(string Name, int Age) {
+		this.Name = Name;
+		this.Age = Age;
+	}
+
+	public override string ToString() {
+		return string.Format("{0}:{1}", this.Name, this.Age);
+	}
+
+	public string ToFilterString() {
+		if (this.Age >= 0) {
+			return string.Format("\"{0}:{1}\"", this.Name, this.Age);
+		}
+		return string.Format("\"{0}\"", this.Name);
+	}
+
+	public bool Equals(object obj) {
+        if (!(obj is Person)) return false;
+		return Equals((Person) obj);
+	}
+
+    public bool Equals(Person other) {
+        if (other==null) return false;
+		return this.Name == other.Name && this.Age == other.Age;
+	}
+
+	public static Person Parse(string value) {
+		string[] array = value.Split(new char[] {
+			':'
+		},
+		StringSplitOptions.RemoveEmptyEntries);
+		return new Person(array[0], int.Parse(array[1]));
+	}
+
+	//public override int GetHashCode() {
+	//	return this.Name.GetHashCode() * 11 + this.Age.GetHashCode();
+	//}
+	public static bool operator == (Person lhs, Person rhs) {
+		// If left hand side is null...
+		if (System.Object.ReferenceEquals(lhs, null)) {
+			// ...and right hand side is null...
+			if (System.Object.ReferenceEquals(rhs, null)) {
+				//...both are null and are Equal.
+				return true;
+			}
+
+			// ...right hand side is not null, therefore not Equal.
+			return false;
+		}
+
+		// Return true if the fields match:
+		return lhs.Equals(rhs);
+	}
+	public static bool operator != (Person lhs, Person rhs) {
+		return ! (lhs == rhs);
+	}
+}
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            //Your code goes here
+            Person A = new Person("A", 1);
+            Person A1 = new Person("A", 1);
+            Person A2 = new Person("A", 2);
+            Console.WriteLine(string.Format("A == A1 is {0}", A==A1));
+            Console.WriteLine(string.Format("A == A2 is {0}", A==A2));
+            Console.WriteLine(string.Format("A != A1 is {0}", A!=A1));
+            Console.WriteLine(string.Format("A != A2 is {0}", A!=A2));
+            List<Person> l1 = new List<Person>(){new Person("1",1),new Person("2",2),new Person("3",3),new Person("4",4)};
+            List<Person> l2 = new List<Person>(){new Person("1",1),new Person("2",2),new Person("3",3),new Person("4",4)};
+            List<Person> l3 = new List<Person>(){new Person("11",11),new Person("12",12),new Person("13",13),new Person("14",14)};
+            List<Person> l4 = new List<Person>(){new Person("1",1),new Person("2",2),new Person("3",3),new Person("4",4),new Person("5",5)};
+            Console.WriteLine("l1 == l2 is {0}", l1.SequenceEqual(l2));
+            Console.WriteLine("l1 == l3 is {0}", l1.SequenceEqual(l3));
+            Console.WriteLine("l1 == l4 is {0}", l1.SequenceEqual(l4));
+            Console.WriteLine("Program End!!");
+        }
+    }
+}
